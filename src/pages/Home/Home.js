@@ -51,7 +51,9 @@ const Home = () => {
         {/* <Button onClick={mintNft}>Mint Poké Card</Button> */}
         <Flex gap='2rem'>
         <NavLink to='/app'>
-        <Button p='1.5rem' border='2px solid white' bg='none' color='white' _hover={{background:'white', color:'black'}}>Launch App</Button>
+        <Button p='1.5rem' border='1px solid white' bg='none' color='white' backdropFilter='blur(6px)'  boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black'}
+    
+      }>Launch App</Button>
         </NavLink>
         <Image src={nftImg}></Image>
         

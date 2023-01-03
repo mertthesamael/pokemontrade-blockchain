@@ -1,0 +1,15 @@
+
+.nftCard{
+
+    & .nftImg{
+        &:hover{
+            .dynamicShadow{
+                opacity: 1;
+            }
+        }
+    }
+    & .dynamicShadow{
+        transition: opacity 1s ease;
+       opacity: 0;
+    }
+}
