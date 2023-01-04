@@ -10,6 +10,7 @@ import MyNft from './pages/MyNft/MyNft';
 import OpenTrades from './pages/OpenTrades/OpenTrades';
 import Trade from './components/Trade/Trade';
 import CreateTrade from './pages/CreateTrade/CreateTrade';
+import MyTrade from './pages/MyTrade/MyTrade';
 
 function App() {
   
@@ -50,6 +51,15 @@ function App() {
         <SideMenu />
         <Body>
         <CreateTrade />
+        </Body>
+        </Wrapper>
+    }>
+      </Route>
+      <Route path='/mytrade' element={
+      <Wrapper>
+        <SideMenu />
+        <Body>
+        <MyTrade />
         </Body>
         </Wrapper>
     }>

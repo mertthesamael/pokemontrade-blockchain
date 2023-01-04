@@ -15,7 +15,7 @@ const CreateCard = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const signerAddr = signer.getAddress()
-        const contract = new ethers.Contract("0x4452EFEa8daeEd3aD501f154D5a77648Baa6Ce07", abi.abi, signer)
+        const contract = new ethers.Contract("0x410Ba3C8F97f8CB4E5147d73239FFeeB34be834f", abi.abi, signer)
         try{
             await contract.setTrade(userTokenId)
 

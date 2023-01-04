@@ -13,11 +13,12 @@ export const UserContextWrapper = (props) => {
     const [totalTrades, setTotalTrades] = useState()
     const [creatorTokenUri, setCreatorUri] = useState()
     const {data, isLoading} = useGetData(tokenUri);
+    const ca = "0x410Ba3C8F97f8CB4E5147d73239FFeeB34be834f"
     const getUserNft = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const signerAddr = signer.getAddress()
-        const contract = new ethers.Contract("0x4452EFEa8daeEd3aD501f154D5a77648Baa6Ce07", abi.abi, signer)
+        const contract = new ethers.Contract(ca, abi.abi, signer)
         const nfts = await contract.getAll(signerAddr)
         const tokenUri = await contract.tokenURI(nfts[nfts.length-1].toNumber())
         setTokenUri(tokenUri)
@@ -29,10 +30,10 @@ export const UserContextWrapper = (props) => {
     const getCaData = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x4452EFEa8daeEd3aD501f154D5a77648Baa6Ce07", abi.abi, signer)
+        const contract = new ethers.Contract(ca, abi.abi, signer)
         const allTrades = await contract.totalTrades();
         
-        console.log(allTrades.toNumber())
+       
         let emptyArr = []
         for(let i = 1; i<=allTrades.toNumber();i++){
             let index = await contract.trades(i)
@@ -52,6 +53,7 @@ useEffect(() => {
             loading:isLoading,
             userTokenId:userTokenId,
             totalTrades:totalTrades,
+            ca:ca,
            
         }}>
             {props.children}

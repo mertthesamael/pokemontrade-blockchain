@@ -8,21 +8,20 @@ import '../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721UR
 
 contract PokemonCards is ERC721URIStorage, Ownable {
     
-   
+  
     /***************** MINT SEQUENCE *****************/
 
     uint public totalSupply;
     uint public maxSupply;
     bool public isMintEnabled = true;
     uint[] public hasTokenId;
-    
+    mapping(address => mapping(uint256 => uint256)) private _ownedTokens;
     // Mapping for amount of minted nfts by an address
     mapping(address => uint256) public mintedWallets;
 
     //This variabla manually tracks ID's of tokens that user holds. It does not count transferred tokens, but traded ones. Maybe this'll be uptaded idk...
     mapping(address => uint[]) public ownedNfts;
-
-
+  
     constructor() payable ERC721('Pokemon Card', 'POKE') {
         maxSupply = 20;
     }
@@ -36,7 +35,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     }
     function mint(string memory tokenURI) external payable {
        require(isMintEnabled,"Minting is not enable");
-       require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
+       //require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
        require(maxSupply > totalSupply, "Sold Out ! ");
        
         mintedWallets[msg.sender]++;
@@ -57,9 +56,6 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     return ownedNfts[_addr];
     }
 
-  
-    /***************** TRADE SEQUENCE *****************/
-
     uint public totalTrades = 0;
     struct Trade {
         address creator;
@@ -71,23 +67,32 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         address dealer;
         uint dealerTokenId;
     }
+  
+    /***************** TRADE SEQUENCE *****************/
+
     //Trade Events
 
     event TradeCreated(address indexed _signer, uint indexed _id);
     event Cancel(address indexed _signer, uint indexed _id);
     event Bid(address indexed _signer, uint indexed _id);
     event FinalizeTrade(address indexed _from, address indexed _to, uint indexed _id);
-    
+ 
     mapping(uint => Trade) public trades;
     mapping(address => Trade[]) public userTrades;
+    mapping(address => bool) public isTrading;
+
     Trade[] public allTrades;
     function getAlltrades() public view returns(Trade[] memory){
         return allTrades;
     }
+
     function setTrade(uint _creatorTokenId) external payable {
         require(ownerOf(_creatorTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
+        require(isTrading[msg.sender] == false, "You are already trading !");
+
         setApprovalForAll(address(this), true); 
         totalTrades++;
+        isTrading[msg.sender] = true;
         trades[totalTrades] = Trade({
             creator:msg.sender,
             creatorTokenId: _creatorTokenId,
@@ -98,6 +103,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
             dealer:address(0),
             dealerTokenId:0
         });
+        allTrades.push(trades[totalTrades]);
         userTrades[msg.sender].push(trades[totalTrades]);
 
         emit TradeCreated(msg.sender, totalTrades);
@@ -106,7 +112,10 @@ contract PokemonCards is ERC721URIStorage, Ownable {
 
     function bidTrade(uint _tradeId, uint _delaerTokenId) external payable {
         require(ownerOf(_delaerTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
+        require(isTrading[msg.sender]==false, "You are already trading ! ");
+        
         setApprovalForAll(address(this), true); 
+        isTrading[msg.sender] = true;
         trades[_tradeId].dealer = msg.sender;
         trades[_tradeId].dealerTokenId = _delaerTokenId;
         userTrades[msg.sender].push(trades[_tradeId]);
@@ -121,7 +130,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
             trades[_tradeId].dealerConfirm = true;
         }
     }
-
+    
     function cancelTrade(uint _tradeId) external payable{
         require(msg.sender == trades[_tradeId].creator || msg.sender == trades[_tradeId].dealer, "You have no permission in this trade");
         if(msg.sender == trades[_tradeId].creator){
@@ -162,6 +171,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         emit FinalizeTrade(trades[_tradeId].creator, trades[_tradeId].dealer, _tradeId);
 
     }
+    
     
 
 }

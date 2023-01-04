@@ -32,7 +32,9 @@ const SideMenu = () => {
             <NavLink to='/trade'>
             <NavItem title='Trade'/>
             </NavLink>
+            <NavLink to='/mytrade'>
             <NavItem title='My Trades'/>
+            </NavLink>
             </Flex>
             <Flex pos='absolute' bottom='4rem' >
                 <Button backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black', transform:'scale(1.1)'}}>Connect</Button>

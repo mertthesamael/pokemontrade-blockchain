@@ -1,15 +1,16 @@
 import { Box, Button, Image } from "@chakra-ui/react";
 import Tilt from "react-parallax-tilt"
 import styles from "./nftcard.module.scss"
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
+import { UserContext } from "../../store/context";
 
 const NftCard = ({id}) => {
 
     const [shadowY, setShadowY] = useState("")
     const [shadowX, setShadowX] = useState("")
-
+    const {ca} = useContext(UserContext)
     //Function for tracking mouse position in order to develop dynamic shadow.
     const mouseTracker = (e)=> {
         setShadowY(e.tiltAngleYPercentage<0?
@@ -25,7 +26,7 @@ const NftCard = ({id}) => {
     const mintNft = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x4452EFEa8daeEd3aD501f154D5a77648Baa6Ce07", abi.abi, signer)
+        const contract = new ethers.Contract(ca, abi.abi, signer)
         await contract.mint(`https://ipfs.io/ipfs/QmTJe7S9PEzgfgXaN9ZYb19m9y7kvPR6Be1qthKSrKyEVV/${id}.json`)
       }
       
