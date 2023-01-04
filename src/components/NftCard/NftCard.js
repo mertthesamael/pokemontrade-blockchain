@@ -25,7 +25,7 @@ const NftCard = ({id}) => {
     const mintNft = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const contract = new ethers.Contract("0xAd9DAC734E5895AC35eDBE842C19130f4B4Ce435", abi.abi, signer)
+        const contract = new ethers.Contract("0x4452EFEa8daeEd3aD501f154D5a77648Baa6Ce07", abi.abi, signer)
         await contract.mint(`https://ipfs.io/ipfs/QmTJe7S9PEzgfgXaN9ZYb19m9y7kvPR6Be1qthKSrKyEVV/${id}.json`)
       }
       

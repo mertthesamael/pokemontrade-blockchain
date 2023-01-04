@@ -7,6 +7,9 @@ import Wrapper from './layouts/Wrapper/Wrapper';
 import Body from './layouts/Body/Body';
 import SideMenu from './layouts/SideMenu/SideMenu';
 import MyNft from './pages/MyNft/MyNft';
+import OpenTrades from './pages/OpenTrades/OpenTrades';
+import Trade from './components/Trade/Trade';
+import CreateTrade from './pages/CreateTrade/CreateTrade';
 
 function App() {
   
@@ -28,6 +31,25 @@ function App() {
         <SideMenu />
         <Body>
         <MyNft />
+        </Body>
+        </Wrapper>
+    }>
+      </Route>
+
+      <Route path='/trades' element={
+      <Wrapper>
+        <SideMenu />
+        <Body>
+        <OpenTrades />
+        </Body>
+        </Wrapper>
+    }>
+      </Route>
+      <Route path='/trade' element={
+      <Wrapper>
+        <SideMenu />
+        <Body>
+        <CreateTrade />
         </Body>
         </Wrapper>
     }>

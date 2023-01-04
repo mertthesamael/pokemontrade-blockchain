@@ -26,8 +26,12 @@ const SideMenu = () => {
             <NavLink to='/mynft'>
             <NavItem title='My NFT'/>
             </NavLink>
+            <NavLink to='/trades'>
             <NavItem title='Open Trades'/>
+            </NavLink>
+            <NavLink to='/trade'>
             <NavItem title='Trade'/>
+            </NavLink>
             <NavItem title='My Trades'/>
             </Flex>
             <Flex pos='absolute' bottom='4rem' >

@@ -57,6 +57,9 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     return ownedNfts[_addr];
     }
 
+  
+    /***************** TRADE SEQUENCE *****************/
+
     uint public totalTrades = 0;
     struct Trade {
         address creator;
@@ -68,18 +71,19 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         address dealer;
         uint dealerTokenId;
     }
-  
-    /***************** TRADE SEQUENCE *****************/
-
     //Trade Events
 
     event TradeCreated(address indexed _signer, uint indexed _id);
     event Cancel(address indexed _signer, uint indexed _id);
     event Bid(address indexed _signer, uint indexed _id);
     event FinalizeTrade(address indexed _from, address indexed _to, uint indexed _id);
- 
+    
     mapping(uint => Trade) public trades;
     mapping(address => Trade[]) public userTrades;
+    Trade[] public allTrades;
+    function getAlltrades() public view returns(Trade[] memory){
+        return allTrades;
+    }
     function setTrade(uint _creatorTokenId) external payable {
         require(ownerOf(_creatorTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
         setApprovalForAll(address(this), true); 
