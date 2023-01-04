@@ -7,7 +7,7 @@ const NavItem = ({title}) => {
 
     return(
         <Box className={styles.navItem}>
-            <Text color='#6E85B2' fontSize='1.8rem'>{title}</Text>
+            <Text  color='white' fontSize='1.8rem'>{title}</Text>
         </Box>
     )
 

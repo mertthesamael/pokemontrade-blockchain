@@ -1,36 +1,36 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
-import { ethers } from "ethers";
-import { useEffect, useState } from "react";
-import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
-import axios from "axios";
-
-
+import { Flex, Image, Spinner, Text } from "@chakra-ui/react";
+import { useContext } from "react";
+import { UserContext } from "../../store/context";
 
 const MyNft = () => {
-    const [nftImage, setNftImg] = useState()
-    const getUserNft = async() => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const signer = provider.getSigner()
-        const signerAddr = signer.getAddress()
-        const contract = new ethers.Contract("0xAd9DAC734E5895AC35eDBE842C19130f4B4Ce435", abi.abi, signer)
-        const nfts = await contract.getAll(signerAddr)
-        const tokenUri = await contract.tokenURI(nfts[nfts.length-1].toNumber())
-        const nftImg = await axios(tokenUri).then(res => res.data.properties.image.value)
-        setNftImg(nftImg)
-        
-        
-    }
-    useEffect(() => {
-        getUserNft()
-    },[])
-    return(
-        <Flex justify='center' align='center' w='100%' h='100%'>
-            <Flex h='30rem' justify='center' bgColor='red' w='20rem'>
-            <Image h='25rem' src={nftImage}></Image>
-            </Flex>
-        </Flex>
-    )
+  const { userToken, loading } = useContext(UserContext);
 
-}
+  return (
+    <Flex justify="center" align="center" w="100%" h="100%">
+      <Flex
+        h="30rem"
+        flexDir="column"
+        align="center"
+        justify="center"
+        w="20rem"
+      >
+        {loading ? (
+          <Spinner></Spinner>
+        ) : (
+          <>
+            <Flex>
+              <Image h="25rem" src={userToken?.properties.image.value}></Image>
+            </Flex>
+            <Flex>
+              <Text color="white" fontSize="5rem">
+                {userToken?.properties.name.value}
+              </Text>
+            </Flex>
+          </>
+        )}
+      </Flex>
+    </Flex>
+  );
+};
 
 export default MyNft;

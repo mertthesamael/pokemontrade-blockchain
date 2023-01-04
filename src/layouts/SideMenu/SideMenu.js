@@ -1,18 +1,28 @@
-import { Box, Button, Flex } from "@chakra-ui/react"
+import { Button, Flex } from "@chakra-ui/react"
 import NavItem from "../../components/NavItem/NavItem";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../store/context";
 
 
 
 
 
 const SideMenu = () => {
+    
+    const {userToken} = useContext(UserContext);
 
-
+    const colors={Charmander:'#AE431E',
+                  Bulbasaur:'#285430',
+                  Squirtle:'#263159',
+                  Pikachu:'#C58940'
+                }
     return(
-        <Flex pos='relative' w='20rem' flexDir='column' align={'center'} p='4rem 0'  h='100%' bgColor='#150050'>
+        <Flex pos='relative' w='20rem' flexDir='column' align={'center'} p='4rem 0'  h='100%' bgColor={userToken?colors[userToken?.properties.name.value]:'#150050'}>
             <Flex flexDir='column' gap='2rem'>
+                <NavLink to='/app'>
             <NavItem title='Mint'/>
+                </NavLink>
             <NavLink to='/mynft'>
             <NavItem title='My NFT'/>
             </NavLink>
