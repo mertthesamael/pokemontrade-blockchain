@@ -1,9 +1,11 @@
 import { Box, Flex } from "@chakra-ui/react"
 import NftCard from "../../components/NftCard/NftCard";
-
-
+import { ethers } from "ethers";
+import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
+//Name will replaced with MINT
 const Main = () => {
-
+    
+      
     return(
         <Flex overflow='auto' justify='center' align='center' h='100%' w='100%'>
             <Flex justify='center' w='90%' columnGap='10rem' rowGap='8rem' flexWrap='wrap'>

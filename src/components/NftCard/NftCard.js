@@ -2,7 +2,8 @@ import { Box, Button, Image } from "@chakra-ui/react";
 import Tilt from "react-parallax-tilt"
 import styles from "./nftcard.module.scss"
 import { useEffect, useState } from "react";
-
+import { ethers } from "ethers";
+import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 
 const NftCard = ({id}) => {
 
@@ -20,6 +21,14 @@ const NftCard = ({id}) => {
                 *0.1:Math.abs(e.tiltAngleXPercentage)*0.1)
     
     }
+
+    const mintNft = async () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract("0xAd9DAC734E5895AC35eDBE842C19130f4B4Ce435", abi.abi, signer)
+        await contract.mint(`https://ipfs.io/ipfs/QmTJe7S9PEzgfgXaN9ZYb19m9y7kvPR6Be1qthKSrKyEVV/${id}.json`)
+      }
+      
     const cardStyle = {
         1:{img:"https://ipfs.io/ipfs/QmU2ynpBSGYta2Cwy3D1THL7nTLmB8m6rEVDmdstVemgdY",color:'aqua'},
         2:{img:"https://ipfs.io/ipfs/QmX4TsCKbHWdNBAgdhe4YFutgCYdM4XPVFHyAh5TNsUR2F",color:'#B3FFAE'},
@@ -38,7 +47,7 @@ const NftCard = ({id}) => {
             </Tilt>
             </Box >
             <Box display='flex' justifyContent='center' h='100%'>
-                <Button backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:cardStyle[id].color, color:'black',transform:'scale(1.1)'}}>
+                <Button onClick={mintNft} backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:cardStyle[id].color, color:'black',transform:'scale(1.1)'}}>
                     I Choose You !
                 </Button>
             </Box>

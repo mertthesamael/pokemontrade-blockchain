@@ -6,6 +6,7 @@ import Main from './pages/Main/Main';
 import Wrapper from './layouts/Wrapper/Wrapper';
 import Body from './layouts/Body/Body';
 import SideMenu from './layouts/SideMenu/SideMenu';
+import MyNft from './pages/MyNft/MyNft';
 
 function App() {
   
@@ -17,6 +18,16 @@ function App() {
         <SideMenu />
         <Body>
         <Main />
+        </Body>
+        </Wrapper>
+    }>
+      </Route>
+
+      <Route path='/mynft' element={
+      <Wrapper>
+        <SideMenu />
+        <Body>
+        <MyNft />
         </Body>
         </Wrapper>
     }>
