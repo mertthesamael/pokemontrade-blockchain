@@ -15,7 +15,7 @@ const {userToken} = useContext(UserContext);
                 }
 
     return(
-        <Flex w='100%' h='100%' bgColor={userToken?colors[userToken.properties.name.value]:'#16213E'}>
+        <Flex w='100%' pos='relative' h='100%' bgColor={userToken?colors[userToken.properties.name.value]:'#16213E'}>
             {children}
         </Flex>
     )

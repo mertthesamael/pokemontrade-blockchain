@@ -1,5 +1,5 @@
-import { Button, Flex, Image } from "@chakra-ui/react"
-import { useContext } from "react";
+import { Button, Flex, Image, useToast } from "@chakra-ui/react"
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
@@ -7,23 +7,44 @@ import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 
 const CreateCard = () => {
 
-    const {userToken, userTokenId} = useContext(UserContext);
-    
+    const {userToken, userTokenId, ca, web3Init} = useContext(UserContext);
+    const toast = useToast()
+    const [loading, setLoading] = useState(false)
 
     const createTrade = async() => {
-        console.log(userTokenId)
+
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const signerAddr = signer.getAddress()
-        const contract = new ethers.Contract("0x410Ba3C8F97f8CB4E5147d73239FFeeB34be834f", abi.abi, signer)
+        const contract = new ethers.Contract(ca, abi.abi, signer)
         try{
             await contract.setTrade(userTokenId)
 
         }catch(err){
-            console.log(err)
+            toast({
+                title:err.reason,
+                status:'error'
+            })
         }
         
     }
+    const checkEvents = () => {
+        setLoading(true);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          ca,
+          abi.abi,
+          provider
+        );
+        contract.on("TradeCreated", () => {
+            setLoading(false);
+            web3Init()
+        });
+      };
+
+      useEffect(() => {
+        checkEvents()
+      },[])
     return(
 
         <Flex flexDir='column' w='20rem'  h='max-content'>

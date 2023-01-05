@@ -11,6 +11,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
   
     /***************** MINT SEQUENCE *****************/
 
+    event Minted(address indexed _signer, uint indexed _id);
     uint public totalSupply;
     uint public maxSupply;
     bool public isMintEnabled = true;
@@ -35,7 +36,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     }
     function mint(string memory tokenURI) external payable {
        require(isMintEnabled,"Minting is not enable");
-       //require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
+       require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
        require(maxSupply > totalSupply, "Sold Out ! ");
        
         mintedWallets[msg.sender]++;
@@ -44,6 +45,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         ownedNfts[msg.sender].push(tokenId);
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId,tokenURI);
+        emit Minted(msg.sender, tokenId);
     }
     
     //https://ipfs.io/ipfs/Qmerhz8zanVrWQgK5aLXU2HHYPFmrMmuLwYgcm8j7kE4UR/3.json
@@ -76,14 +78,15 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     event Cancel(address indexed _signer, uint indexed _id);
     event Bid(address indexed _signer, uint indexed _id);
     event FinalizeTrade(address indexed _from, address indexed _to, uint indexed _id);
- 
+    event CreatorConfirmed(address indexed _signer, uint indexed _id);
+    event DealerConfirmed(address indexed _signer, uint indexed _id);
     mapping(uint => Trade) public trades;
     mapping(address => Trade[]) public userTrades;
     mapping(address => bool) public isTrading;
 
     Trade[] public allTrades;
-    function getAlltrades() public view returns(Trade[] memory){
-        return allTrades;
+    function getAlltrades() public view returns(uint){
+        return allTrades.length;
     }
 
     function setTrade(uint _creatorTokenId) external payable {
@@ -126,8 +129,11 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         require(msg.sender == trades[_tradeId].creator || msg.sender == trades[_tradeId].dealer, "You have no permission in this trade");
         if(msg.sender == trades[_tradeId].creator){
             trades[_tradeId].creatorConfirm = true;
+            emit CreatorConfirmed(msg.sender, _tradeId);
         } else if(msg.sender==trades[_tradeId].dealer){
             trades[_tradeId].dealerConfirm = true;
+            emit DealerConfirmed(msg.sender, _tradeId);
+
         }
     }
     
