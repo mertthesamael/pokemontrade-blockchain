@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useGetData } from "../hooks/useGetData";
 import abi from "../contracts/PokemonCards.sol/PokemonCards.json"
-import { ethers } from "ethers";
+import { ethers, getDefaultProvider } from "ethers";
 import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 
 const UserContext = React.createContext({
@@ -10,7 +11,7 @@ const UserContext = React.createContext({
 })
 
 export const UserContextWrapper = (props) => {
-    const ca = "0x356fe86D411BDE7Af842C14cAd1260E69aD63392"
+    const ca = "0x1e550451Dea5981626462c528cD2F0e75664187C"
 
     const [tokenUri, setTokenUri] = useState()
     const [userTokenId, setUserTokenId] = useState()
@@ -38,7 +39,6 @@ export const UserContextWrapper = (props) => {
         const signer = provider.getSigner()
         const contract = new ethers.Contract(ca, abi.abi, signer)
         const allTrades = await contract.totalTrades();
-        
        
         let emptyArr = []
         for(let i = 1; i<=allTrades.toNumber();i++){
@@ -144,12 +144,29 @@ export const UserContextWrapper = (props) => {
     isConnected()
     
  }
-useEffect(() => {
+ const handleAccountChange = (...args) => {
+  // you can console to see the args
+  const accounts = args[0] ;
+  // if no accounts that means we are not connected
+  if (accounts.length === 0) {
+    console.log("Please connect to metamask");
+    // our old data is not current connected account
+    // currentAccount account that you already fetched and assume you stored it in useState
+  } else if (accounts[0] !== connectedAddr) {
+    // if account changed you should update the currentAccount so you return the updated the data
+    // assuming you have [currentAccount,setCurrentAccount]=useState
+    // however you are tracking the state currentAccount, you have to update it. in case of redux you have to dispatch update action etc
+    setConnectedAddr(accounts[0])
+  }
+};
+ useEffect(() => {
 
+  window.ethereum?.on("accountsChanged", handleAccountChange);
 
-web3Init()
-    connect()
-    isConnected()
+  web3Init()
+  connect()
+  isConnected()
+ 
 },[])
     return(
         <UserContext.Provider value={{

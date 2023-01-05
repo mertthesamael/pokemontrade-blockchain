@@ -6,21 +6,21 @@ import styles from './nftinfo.module.scss'
 const NftInfo = ({token}) => {
 
 const theme={
-    "Pikachu":{borderRadius: '50px',
+    "Pikachu":{borderRadius: '20px',
         background: '#E5BA73',
         boxShadow:  '19px 19px 37px #c39e62, -19px -19px 37px #ffd684'},
     "Charmander":{
-        borderRadius:'50px',
+        borderRadius:'20px',
         background:'#EA5C2B',
         boxShadow:'19px 19px 37px #c74e25, -19px -19px 37px #ff6a31'
     },
     "Bulbasaur":{
-        borderRadius:'50px',
+        borderRadius:'20px',
         background:'#3C6255',
         boxShadow:'19px 19px 37px #335348, -19px -19px 37px #457162'
     },
     "Squirtle":{
-        borderRadius:'50px',
+        borderRadius:'20px',
         background:'#064663',
         boxShadow:'19px 19px 37px #053c54, -19px -19px 37px #075172'
     }
@@ -35,6 +35,7 @@ const theme={
             <Flex p='2rem' style={theme[token?.properties.name.value]} flexDir='column' gap='4rem'>
                 <Box>
                     <Text fontSize='35px' color='white' fontWeight='bolder'>{token?.properties.name.value}</Text>
+                    <Text fontSize='20px' color='white' fontWeight='bolder'>{`(${token?.properties.series.value})`}</Text>
                 </Box>
                 <Flex minW='35rem' flexDir='column' gap='4rem'>
                     <Flex flexDir='column' gap='1rem'>

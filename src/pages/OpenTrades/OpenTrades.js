@@ -11,7 +11,7 @@ const {totalTrades} = useContext(UserContext)
 
     return(
         <Flex w='100%'   flexDir='column' justify='center' align='center' h='100%'>
-            <Flex flexDir='column' gap='2rem' alignItems='center' w='70%' h='100%' overflowX='auto'>
+            <Flex flexDir='column' p='5rem 10rem' gap='2rem' alignItems='center' w='100%' h='100%' overflowY='auto'>
             {totalTrades?.map(trade => <Trade id='2' trade={trade}/>)}
             </Flex>
             

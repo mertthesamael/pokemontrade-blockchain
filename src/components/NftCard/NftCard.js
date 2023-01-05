@@ -5,16 +5,37 @@ import { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 import { UserContext } from "../../store/context";
+import { useNavigate } from "react-router-dom";
 
 const NftCard = ({id}) => {
 
     const [shadowY, setShadowY] = useState("")
     const [shadowX, setShadowX] = useState("")
-    const {ca, web3Init} = useContext(UserContext)
+    const {ca, web3Init,userToken} = useContext(UserContext)
     const [loading, setLoading] = useState(false)
     const [selected, setSelected] = useState(false)
+    const navigate = useNavigate()
     const toast = useToast()
-
+    const theme={
+        "Pikachu":{borderRadius: '50px',
+            background: '#E5BA73',
+            boxShadow:  '19px 19px 37px #c39e62, -19px -19px 37px #ffd684'},
+        "Charmander":{
+            borderRadius:'50px',
+            background:'#EA5C2B',
+            boxShadow:'19px 19px 37px #c74e25, -19px -19px 37px #ff6a31'
+        },
+        "Bulbasaur":{
+            borderRadius:'50px',
+            background:'#3C6255',
+            boxShadow:'19px 19px 37px #335348, -19px -19px 37px #457162'
+        },
+        "Squirtle":{
+            borderRadius:'50px',
+            background:'#064663',
+            boxShadow:'19px 19px 37px #053c54, -19px -19px 37px #075172'
+        }
+        }
     const checkEvents = () => {
         setLoading(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -27,6 +48,7 @@ const NftCard = ({id}) => {
             setLoading(false);
             web3Init()
             setSelected(true)
+            navigate('/mynft')
         });
       };
     //Function for tracking mouse position in order to develop dynamic shadow.
