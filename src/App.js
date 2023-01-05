@@ -8,17 +8,17 @@ import Body from './layouts/Body/Body';
 import SideMenu from './layouts/SideMenu/SideMenu';
 import MyNft from './pages/MyNft/MyNft';
 import OpenTrades from './pages/OpenTrades/OpenTrades';
-import Trade from './components/Trade/Trade';
 import CreateTrade from './pages/CreateTrade/CreateTrade';
 import MyTrade from './pages/MyTrade/MyTrade';
 
 function App() {
-  
+
   return (
+
     <Routes>
       <Route path='/' element={<Home/>}></Route>
       <Route path='/app' element={
-      <Wrapper>
+        <Wrapper>
         <SideMenu />
         <Body>
         <Main />
@@ -28,7 +28,7 @@ function App() {
       </Route>
 
       <Route path='/mynft' element={
-      <Wrapper>
+        <Wrapper>
         <SideMenu />
         <Body>
         <MyNft />
@@ -38,7 +38,7 @@ function App() {
       </Route>
 
       <Route path='/trades' element={
-      <Wrapper>
+        <Wrapper>
         <SideMenu />
         <Body>
         <OpenTrades />
@@ -47,7 +47,7 @@ function App() {
     }>
       </Route>
       <Route path='/trade' element={
-      <Wrapper>
+        <Wrapper>
         <SideMenu />
         <Body>
         <CreateTrade />
@@ -56,7 +56,7 @@ function App() {
     }>
       </Route>
       <Route path='/mytrade' element={
-      <Wrapper>
+        <Wrapper>
         <SideMenu />
         <Body>
         <MyTrade />

@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 *{
  
   margin: 0;
   box-sizing: border-box;
+  font-family:'Ubuntu' ;
 }
 .App {
   text-align: center;

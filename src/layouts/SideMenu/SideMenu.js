@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react"
+import { Button, Flex, Text } from "@chakra-ui/react"
 import NavItem from "../../components/NavItem/NavItem";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
@@ -10,7 +10,7 @@ import { UserContext } from "../../store/context";
 
 const SideMenu = () => {
     
-    const {userToken} = useContext(UserContext);
+    const {isConnected,userToken,userAddr} = useContext(UserContext);
 
     const colors={Charmander:'#AE431E',
                   Bulbasaur:'#285430',
@@ -37,7 +37,15 @@ const SideMenu = () => {
             </NavLink>
             </Flex>
             <Flex pos='absolute' bottom='4rem' >
+            {isConnected?
+                <Button maxW='6rem' backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black', transform:'scale(1.1)'}}>
+                    <Text  textOverflow='ellipsis' overflow='hidden' whiteSpace='nowrap'>
+                    {userAddr}
+                    </Text>
+                    </Button>
+                :
                 <Button backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black', transform:'scale(1.1)'}}>Connect</Button>
+            }
             </Flex>
         </Flex>
     )

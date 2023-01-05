@@ -4,17 +4,20 @@ import abi from "../contracts/PokemonCards.sol/PokemonCards.json"
 import { ethers } from "ethers";
 import { useToast } from "@chakra-ui/react";
 
+
 const UserContext = React.createContext({
     emptyValue:''
 })
 
 export const UserContextWrapper = (props) => {
-    const ca = "0x5c45677e773d5473306f1cc6816cF1CE29FB6f71"
+    const ca = "0x356fe86D411BDE7Af842C14cAd1260E69aD63392"
+
     const [tokenUri, setTokenUri] = useState()
     const [userTokenId, setUserTokenId] = useState()
     const [totalTrades, setTotalTrades] = useState()
     const [creatorTokenUri, setCreatorUri] = useState()
     const [isLogged, setIsLogged] = useState(false);
+    const [connectedAddr, setConnectedAddr] = useState()
     const {data, isLoading} = useGetData(tokenUri);
     const toast = useToast()
     const getUserNft = async () => {
@@ -47,12 +50,7 @@ export const UserContextWrapper = (props) => {
     }
    
 
-    async function checkConnection() {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const isConnectedd = await provider.isConnected();
-    
-      setIsLogged(isConnectedd);
-    }
+   
 
 
     const connect = async() => {
@@ -78,6 +76,8 @@ export const UserContextWrapper = (props) => {
                   ],
                 });
                 await window.ethereum.request({ method: "eth_requestAccounts" });
+                const addr = await provider.getSigner().getAddress()
+                setConnectedAddr(addr)
                 setIsLogged(true);
               
               } catch (err) {
@@ -124,20 +124,32 @@ export const UserContextWrapper = (props) => {
        
     }
 
+    const isConnected = async () => {
+      const accounts = await window.ethereum.request({ method: "eth_accounts" });
+      if(accounts.length) {
+        console.log(`You're connected to: ${accounts[0]}`);
+        setConnectedAddr(accounts[0])
+        setIsLogged(true);
+      } else {
+        console.log("Wallet is not connected");
+        setIsLogged(false);
+      }
+    };
   
  const web3Init = () => {
 
     getCaData()
     getUserNft()
     getUserTrade()
-    checkConnection()
+    isConnected()
+    
  }
 useEffect(() => {
 
 
 web3Init()
     connect()
-   
+    isConnected()
 },[])
     return(
         <UserContext.Provider value={{
@@ -148,7 +160,8 @@ web3Init()
             ca:ca,
             trade:trade,
             isConnected:isLogged,
-            web3Init:web3Init
+            web3Init:web3Init,
+            userAddr:connectedAddr
         }}>
             {props.children}
         </UserContext.Provider>
