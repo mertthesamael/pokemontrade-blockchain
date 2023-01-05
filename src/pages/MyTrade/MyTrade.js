@@ -12,13 +12,12 @@ const MyTrade = () => {
     const navigateUser = (path) => {
        return navigate(path)
     }
-        if(trade.creatorTokenId == 0 || trade.isCompleted == true){
+        if(trade.creatorTokenId == 0 || trade.isCompleted == true || trade == false){
         return (
         <Flex gap='2rem' justify="center" flexDir='column' align="center" w="100%" h="100%">
             <Text fontSize='30px' fontWeight='bolder' color='white'>You Dont Have Any Active Trades</Text>
             <Button onClick={() => navigate('/trade')}>Make One !</Button>
             <Text fontSize='30px' fontWeight='bolder' color='white'>OR</Text>
-            
             <Button onClick={() => navigate('/trades')}>Look For Trade</Button>
 </Flex>
         )

@@ -102,8 +102,8 @@ try{
         <Flex p='1rem' w='max-content' style={theme[userToken.properties.name.value]} h="100%" >
           <Image h='100%' draggable="false" src={creatorToken?.properties.image.value} />
         </Flex>
-        <Flex>
-          <Text>{trade.creator}</Text>
+        <Flex p='0 1.5rem'>
+          <Text color='white' textOverflow='ellipsis' overflow='hidden' whiteSpace='nowrap' w='100px'>{trade.creator}</Text>
         </Flex>
       </Flex>
 
@@ -126,8 +126,8 @@ try{
                 src={dealerToken?.properties.image.value}
               />
             </Flex>
-            <Flex justify="flex-end">
-              <Text>{trade.dealer}</Text>
+            <Flex p='0 0.8rem'justify="flex-end">
+              <Text color='white' textOverflow='ellipsis' overflow='hidden' whiteSpace='nowrap' w='100px'>{trade.dealer}</Text>
             </Flex>
           </>
         )}

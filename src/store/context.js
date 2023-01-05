@@ -178,7 +178,8 @@ export const UserContextWrapper = (props) => {
             trade:trade,
             isConnected:isLogged,
             web3Init:web3Init,
-            userAddr:connectedAddr
+            userAddr:connectedAddr,
+            connect:connect
         }}>
             {props.children}
         </UserContext.Provider>

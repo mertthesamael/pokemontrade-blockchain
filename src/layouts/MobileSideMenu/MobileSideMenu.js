@@ -1,19 +1,17 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react"
+
+import { Box, Button, Flex, propNames, Text } from "@chakra-ui/react"
 import NavItem from "../../components/NavItem/NavItem";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../store/context";
 import { LayoutContext } from "../../store/layoutContext";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
-import styles from "./sidemenu.module.scss"
+import styles from "./mobilesidemenu.module.scss"
 
 
-
-
-const SideMenu = () => {
-    
+const MobileSideMenu = ({children}) => {
     const {isConnected,userToken,userAddr} = useContext(UserContext);
-    const {menuState, onMenuState, connect} = useContext(LayoutContext)
+    const {menuState, onMenuState} = useContext(LayoutContext)
     const colors={Charmander:'#AE431E',
                   Bulbasaur:'#285430',
                   Squirtle:'#263159',
@@ -23,11 +21,12 @@ const SideMenu = () => {
                 const menuStateHandler = () => {
                     onMenuState()
                 }
-                const connectWal = () => {
-                    connect()
-                }
-    return( 
-        <Flex zIndex='2' boxShadow={menuState?userToken?`0 0 10px 10px ${colors[userToken.properties.name.value]}`:'0 10px 50px 1px darkblue':""} style={menuState? { }:{display:'none'}} className={styles.sideMenu} pos='relative' minW='15rem' flexDir='column' align={'center'} p='7rem 0'  h='100%' bgColor={userToken?colors[userToken?.properties.name.value]:'#150050'}>
+return(
+    <Flex className={styles.mobileSideMenu} pos='relative' w='100vw' h='100vh'>
+
+    <Flex  bgColor='black' w='100%'  h='100%'>
+        <Text color='black' fontSize='20rem'>MobileSideMenu</Text>
+        <Flex pos='relative' w='20rem' flexDir='column' align={'center'} p='7rem 0'  h='100%' bgColor={userToken?colors[userToken?.properties.name.value]:'#150050'}>
                {menuState&& <Box onClick={menuStateHandler} className={styles.menuBox} pos='absolute' top='2rem' left='2rem'>
                 <CloseIcon color='white' w='1.4rem' height='1.4rem'></CloseIcon>
                 </Box>}
@@ -58,12 +57,19 @@ const SideMenu = () => {
                     </Text>
                     </Button>
                 :
-                <Button onClick={connectWal} backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black', transform:'scale(1.1)'}}>Connect</Button>
+                <Button backdropFilter='blur(6px)' color='white' boxShadow='0 0px 5px 0px white' background='rgba( 255, 255, 255, 0.05 )' _hover={{background:'white', color:'black', transform:'scale(1.1)'}}>Connect</Button>
             }
             </Flex>
         </Flex>
-    )
+        <Flex w='100%' h='100%'  pos='absolute'right='0' bgColor='red'>
+
+        </Flex>
+        
+    </Flex>
+    {children}
+    </Flex>
+)
 
 }
 
-export default SideMenu;
+export default MobileSideMenu

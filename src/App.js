@@ -10,6 +10,8 @@ import MyNft from './pages/MyNft/MyNft';
 import OpenTrades from './pages/OpenTrades/OpenTrades';
 import CreateTrade from './pages/CreateTrade/CreateTrade';
 import MyTrade from './pages/MyTrade/MyTrade';
+import MobileSideMenu from './layouts/MobileSideMenu/MobileSideMenu';
+import PopupWrapper from './layouts/PopupWrapper/PopupWrapper';
 
 function App() {
 
@@ -22,6 +24,7 @@ function App() {
         <SideMenu />
         <Body>
         <Main />
+        <PopupWrapper />
         </Body>
         </Wrapper>
     }>
@@ -31,7 +34,10 @@ function App() {
         <Wrapper>
         <SideMenu />
         <Body>
+
         <MyNft />
+        <PopupWrapper />
+
         </Body>
         </Wrapper>
     }>
@@ -41,7 +47,10 @@ function App() {
         <Wrapper>
         <SideMenu />
         <Body>
+
         <OpenTrades />
+        <PopupWrapper />
+
         </Body>
         </Wrapper>
     }>
@@ -50,7 +59,10 @@ function App() {
         <Wrapper>
         <SideMenu />
         <Body>
+
         <CreateTrade />
+        <PopupWrapper />
+
         </Body>
         </Wrapper>
     }>
@@ -59,7 +71,10 @@ function App() {
         <Wrapper>
         <SideMenu />
         <Body>
+
         <MyTrade />
+        <PopupWrapper />
+
         </Body>
         </Wrapper>
     }>

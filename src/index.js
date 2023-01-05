@@ -7,19 +7,22 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { UserContextWrapper } from "./store/context";
+import { LayoutContextWrapper } from "./store/layoutContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const client = new QueryClient();
 root.render(
   <BrowserRouter>
     <QueryClientProvider client={client}>
-      <UserContextWrapper>
-        <ChakraProvider>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </ChakraProvider>
-      </UserContextWrapper>
+      <LayoutContextWrapper>
+        <UserContextWrapper>
+          <ChakraProvider>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </ChakraProvider>
+        </UserContextWrapper>
+      </LayoutContextWrapper>
     </QueryClientProvider>
   </BrowserRouter>
 );
