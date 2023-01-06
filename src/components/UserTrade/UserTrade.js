@@ -115,9 +115,9 @@ const UserTrade = () => {
       })
     });
     contract.on("Cancel", () => {
-      web3Init()
       setLoading(false);
       setCancelLoading(false)
+      web3Init();
       toast({
         title:'Trade Canceled !',
         status:'success'

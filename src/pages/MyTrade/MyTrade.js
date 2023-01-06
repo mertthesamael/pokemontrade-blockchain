@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const MyTrade = () => {
   const { trade } = useContext(UserContext);
+  console.log(trade)
   const navigate = useNavigate();
   const navigateUser = (path) => {
     return navigate(path);

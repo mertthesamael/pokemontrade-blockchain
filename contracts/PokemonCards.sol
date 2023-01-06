@@ -129,17 +129,16 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     
     function cancelTrade(uint _tradeId) external payable{
         require(msg.sender == trades[_tradeId].creator || msg.sender == trades[_tradeId].dealer, "You have no permission in this trade");
+            isTrading[trades[_tradeId].dealer] = false;
+            isTrading[trades[_tradeId].creator] = false;
         if(msg.sender == trades[_tradeId].creator){
             require(trades[_tradeId].isCompleted == false, "Trade ended already");
             delete trades[_tradeId];
-            isTrading[msg.sender] = false;
-            isTrading[trades[_tradeId].dealer] = false;
             emit Cancel(msg.sender, _tradeId);
         } else if(msg.sender==trades[_tradeId].dealer){
             trades[_tradeId].dealerConfirm = false;
             trades[_tradeId].dealer = address(0);
             trades[_tradeId].dealerTokenId = 0;
-            isTrading[msg.sender] = false;
 
             emit Cancel(msg.sender, _tradeId);
         }

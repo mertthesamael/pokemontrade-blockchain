@@ -9,7 +9,7 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0x3Ffc069FDADEba3097A34E53A756AeBdB0EEE75b";
+  const ca = "0x1851f0e3BEAfB66CbA6Fe0ACebc27BFA9621eb62";
 
   const [tokenUri, setTokenUri] = useState();
   const [userTokenId, setUserTokenId] = useState(0);
@@ -39,6 +39,8 @@ export const UserContextWrapper = (props) => {
     const contract = new ethers.Contract(ca, abi.abi, signer);
     const nfts = await contract.getAll(signerAddr);
     const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
+    const isTradeing = await contract.isTrading(signerAddr);
+    console.log("is trading", isTradeing)
     setTokenUri(tokenUri);
     setUserTokenId(nfts[nfts.length - 1].toNumber());
   };
