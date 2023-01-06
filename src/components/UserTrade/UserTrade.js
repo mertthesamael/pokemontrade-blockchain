@@ -41,6 +41,8 @@ const UserTrade = () => {
         status: "error",
       });
       setLoading(false);
+      setDealerLoading(false)
+      setCreatorLoading(false)
 
     }
   };
@@ -87,21 +89,12 @@ const UserTrade = () => {
       setLoading(false);
       setCreatorApplied(true)
       setCreatorLoading(false)
-      toast({
-        title:'Creator Has Confirmed ',
-        status:'success'
-      })
-
+      web3Init()
     });
     contract.on("DealerConfirmed", () => {
       setLoading(false);
-      setDealerApplied(true)
       setDealerLoading(false)
-      toast({
-        title:'Dealer Has Confirmed ',
-        status:'success'
-      })
-
+      web3Init();
 
     });
     contract.on("FinalizeTrade", () => {
@@ -109,25 +102,42 @@ const UserTrade = () => {
       setLoading(false);
       setFinalizeLoading(false)
       navigate("/mynft");
-      toast({
-        title:'Trade Completed !',
-        status:'success'
-      })
+    
     });
     contract.on("Cancel", () => {
       setLoading(false);
-      setCancelLoading(false)
+      setCancelLoading(false);
+      navigate('/trades')
       web3Init();
-      toast({
-        title:'Trade Canceled !',
-        status:'success'
-      })
+    
+    });
+  };
+
+  const unmountEvents = () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(ca, abi.abi, provider);
+    contract.on("CreatorConfirmed", () => {
+     
+    });
+    contract.on("DealerConfirmed", () => {
+     
+
+    });
+    contract.on("FinalizeTrade", () => {
+   
+    
+    });
+    contract.on("Cancel", () => {
+    
+    
     });
   };
 
   useEffect(() => {
+    unmountEvents()
     checkEvents();
   }, []);
+  console.log(dealerApplied, creatorApplied)
 
   if (trade.creatorTokenId == 0 || trade.isCompleted == true) {
     return null;
@@ -146,7 +156,7 @@ const UserTrade = () => {
                     w="100px"
                     onClick={applyTrade}
                       filter={
-                          creatorApplied || trade.creatorConfirm
+                          trade.creatorConfirm
                           ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(-3px 1px 0px black)"
                           : "invert(0.5) drop-shadow(-3px 1px 0px black)"
                         }
@@ -164,12 +174,12 @@ const UserTrade = () => {
             left="-0.2rem"
             zIndex="0"
             boxShadow={"-2px 2px 0px 0px black"}
-            bgColor={ creatorApplied || trade.creatorConfirm? "#4BB543" : "grey"}
+            bgColor={trade.creatorConfirm? "#4BB543" : "grey"}
             transition="all 1s ease"
           >
             <Box
               transition="all 1s ease"
-              w={ creatorApplied || trade.creatorConfirm ? "100%" : "0%"}
+              w={ trade.creatorConfirm ? "100%" : "0%"}
               h="100%"
               bgColor="#4BB543"
             ></Box>
@@ -182,7 +192,7 @@ const UserTrade = () => {
             w="300px"
             maxH="100%"
             filter={
-              (dealerApplied && creatorApplied)||(trade.creatorConfirm == true && trade.dealerConfirm == true)
+              trade.creatorConfirm  == true
                 ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(3px 1px 0px black)"
                 : "invert(0.5) drop-shadow(3px 1px 0px black)"
             }
@@ -198,12 +208,12 @@ const UserTrade = () => {
             pos="relative"
             left="0.2rem"
             boxShadow={"2px 2px 0px 0px black"}
-            bgColor={dealerApplied || trade.dealerConfirm ? "#4BB543" : "grey"}
+            bgColor={ trade.dealerConfirm ? "#4BB543" : "grey"}
             transition="all 1s ease"
           >
             <Box
               transition="all 1s ease"
-              w={dealerApplied || trade.dealerConfirm ? "100%" : "0%"}
+              w={trade.dealerConfirm ? "100%" : "0%"}
               h="100%"
               bgColor="#4BB543"
             ></Box>
@@ -217,7 +227,7 @@ const UserTrade = () => {
                     cursor="pointer"
                     w="100px"
                     filter={
-                        dealerApplied || trade.dealerConfirm
+                         trade.dealerConfirm == true
                         ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(3px 1px 0px black)"
                       : "invert(0.5) drop-shadow(3px 1px 0px black)"
                     }

@@ -6,13 +6,13 @@ import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { useGetData } from "../../hooks/useGetData";
 import { UserContext } from "../../store/context";
 import styles from "./trade.module.scss";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Trade = ({ trade }) => {
   const [creatorUri, setCreatorUri] = useState();
   const [dealerUri, setDealerUri] = useState();
   const [loading, setLoading] = useState();
-  const { ca, web3Init, userToken } = useContext(UserContext);
+  const { ca, web3Init, userToken, trade:userTrade, web3Loading } = useContext(UserContext);
   const { data: creatorToken } = useGetData(creatorUri);
   const { data: dealerToken } = useGetData(dealerUri);
   const theme = {
@@ -107,14 +107,14 @@ const navigate = useNavigate()
         <Flex
           p="1rem"
           w="max-content"
-          style={theme[userToken.properties.name.value]}
+          style={theme[userToken?.properties.name.value]}
           h="100%"
         >
-          <Image
+         {web3Loading?<Spinner></Spinner>: <Image
             h="100%"
             draggable="false"
             src={creatorToken?.properties.image.value}
-          />
+          />}
         </Flex>
         <Flex p="0 1.5rem">
           <Text
@@ -131,7 +131,7 @@ const navigate = useNavigate()
 
       <Flex h="100%" maxW="100%" minW="10rem" justify="center">
         <Grid placeItems="center">
-          <Image
+          {web3Loading?<Spinner></Spinner>:<Image
             filter={
               trade.isCompleted
                 ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) "
@@ -140,13 +140,17 @@ const navigate = useNavigate()
             h="10rem"
             draggable="false"
             src={TradeIcon}
-          />
+          />}
         </Grid>
       </Flex>
       <Flex h="100%" w="100%" align="flex-end" flexDir="column">
         {trade[1] && trade.dealerTokenId.toNumber() == 0 ? (
           <Flex justify="flex-end" h="100%" align="center">
-            {loading?<Spinner/>:<Button onClick={bidTrade}>Apply Trade</Button>}
+            {loading?<Spinner/>: userToken?<Button onClick={bidTrade}>Apply Trade</Button>:
+            <NavLink to='/app'>
+            <Button colorScheme='red' onClick={bidTrade}>Mint Token</Button>
+            </NavLink>
+            }
           </Flex>
         ) : (
           <>
@@ -154,14 +158,14 @@ const navigate = useNavigate()
               p="1rem"
               w="max-content"
               justify="flex-end"
-              style={theme[userToken.properties.name.value]}
+              style={theme[userToken?.properties.name.value]}
               h="100%"
             >
-              <Image
+            {web3Loading?<Spinner /> : <Image
                 h="100%"
                 draggable="false"
                 src={dealerToken?.properties.image.value}
-              />
+              />}
             </Flex>
             <Flex p="0 0.8rem" justify="flex-end">
               <Text

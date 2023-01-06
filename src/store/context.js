@@ -9,7 +9,7 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0x1851f0e3BEAfB66CbA6Fe0ACebc27BFA9621eb62";
+  const ca = "0xD4d2100fDC3aB73D8D9B50697A365D49D4B53fAf";
 
   const [tokenUri, setTokenUri] = useState();
   const [userTokenId, setUserTokenId] = useState(0);
@@ -18,6 +18,7 @@ export const UserContextWrapper = (props) => {
   const [connectedAddr, setConnectedAddr] = useState();
   const { data, isLoading } = useGetData(tokenUri);
   const [isTrading, setIsTrading] = useState()
+  const [loading, setLoading] = useState()
   const toast = useToast();
   const getIsTrading = async() => {
       
@@ -61,9 +62,9 @@ export const UserContextWrapper = (props) => {
   };
 
   const connect = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const network = await provider.getNetwork();
     try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await provider.getNetwork();
       if (network.chainId !== 80001) {
         try {
           await window.ethereum.request({
@@ -89,7 +90,7 @@ export const UserContextWrapper = (props) => {
         } catch (err) {
           setIsLogged(false);
           toast({
-            title: err.message,
+            title: err.reason,
             status: "error",
           });
         }
@@ -101,7 +102,7 @@ export const UserContextWrapper = (props) => {
     } catch (err) {
       setIsLogged(false);
       toast({
-        title: err.message,
+        title: err.reason,
         status: "error",
       });
     }
@@ -131,6 +132,7 @@ export const UserContextWrapper = (props) => {
     if (accounts.length) {
       console.log(`You're connected to: ${accounts[0]}`);
       setConnectedAddr(accounts[0]);
+      web3Init()
       setIsLogged(true);
     } else {
       console.log("Wallet is not connected");
@@ -139,16 +141,18 @@ export const UserContextWrapper = (props) => {
   };
 
   const web3Init = () => {
+    setLoading(true)
     connect();
     getCaData();
-    getUserNft();
+   getUserNft();
     getUserTrade();
-    isConnected();
-    getIsTrading();
+     getIsTrading();
+    setLoading(false)
   };
 
   useEffect(() => {
-    web3Init();
+    isConnected();
+
   }, []);
   return (
     <UserContext.Provider
@@ -163,7 +167,8 @@ export const UserContextWrapper = (props) => {
         web3Init: web3Init,
         userAddr: connectedAddr,
         connect: connect,
-        isTrading:isTrading
+        isTrading:isTrading,
+        web3Loading: loading
       }}
     >
       {props.children}

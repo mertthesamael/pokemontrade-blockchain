@@ -32,7 +32,6 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     function mint(string memory tokenURI) external payable {
        require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
 
-       
         mintedWallets[msg.sender]++;
         totalSupply++;
         uint256 tokenId = totalSupply;
@@ -102,7 +101,8 @@ contract PokemonCards is ERC721URIStorage, Ownable {
 
     function bidTrade(uint _tradeId, uint _delaerTokenId) external payable {
         require(ownerOf(_delaerTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
-        require(isTrading[msg.sender]==false, "You are already trading ! ");
+        // require(ownedNfts[msg.sender].length + 1 > 0, "You dont have any nft" ); 
+        require(isTrading[msg.sender] == false, "You are already trading ! ");
         
         setApprovalForAll(address(this), true); 
         isTrading[msg.sender] = true;

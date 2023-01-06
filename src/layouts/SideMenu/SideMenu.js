@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 import { WarningIcon } from "@chakra-ui/icons";
 
 const SideMenu = () => {
-  const { isConnected, userToken, userAddr, web3Init, ca, isTrading } = useContext(UserContext);
+  const { isConnected, userToken, userAddr, web3Init, ca, isTrading, trade } = useContext(UserContext);
  
     
 
@@ -23,7 +23,7 @@ const SideMenu = () => {
     Squirtle: "#263159",
     Pikachu: "#C58940",
   };
-
+console.log(trade.dealerTokenId, trade.creatorTokenId)
   const connectWal = () => {
     web3Init();
   };
@@ -68,7 +68,7 @@ const SideMenu = () => {
         </NavLink>
         <NavLink style={{position:'relative'}} to="/mytrade">
           <NavItem title="My Trades" />
-          {isTrading&&<WarningIcon position='absolute' top='0' right='0'/>}
+          {isTrading&&<WarningIcon position='absolute' color={trade?.dealerTokenId?.toNumber() && trade.creatorTokenId.toNumber() && 'green'} top='0' right='0'/>}
         </NavLink>
         <Flex>
           {isConnected ? (
