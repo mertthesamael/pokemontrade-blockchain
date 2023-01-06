@@ -1,12 +1,10 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import NftCard from "../../components/NftCard/NftCard";
-import { ethers } from "ethers";
-import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import Tilt from "react-parallax-tilt";
 import styles from "./main.module.scss";
 import { useContext, useState } from "react";
 import { UserContext } from "../../store/context";
-//Name will replaced with MINT
+//Name will replaced with MINT - maybe
 const Main = () => {
   const [shadowY, setShadowY] = useState("");
   const [shadowX, setShadowX] = useState("");

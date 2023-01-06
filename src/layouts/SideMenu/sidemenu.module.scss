@@ -1,6 +1,8 @@
 .sideMenu{
     transition: all 1s ease!important;
-    display: flex!important;
+    display: flex;
+    & .navItems{
+    }
 }
 .menuBox{
     background: rgba( 255, 255, 255, 0.05 );

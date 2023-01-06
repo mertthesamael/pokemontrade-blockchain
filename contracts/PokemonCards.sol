@@ -23,7 +23,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     mapping(address => uint[]) public ownedNfts;
   
     constructor() payable ERC721('Pokemon Card', 'POKE') {
-        maxSupply = 20;
+        maxSupply = 99999999;
     }
 
 
@@ -31,9 +31,8 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         maxSupply = _maxSupply;
     }
     function mint(string memory tokenURI) external payable {
-    //    require(isMintEnabled,"Minting is not enable");
        require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
-       require(maxSupply > totalSupply, "Sold Out ! ");
+
        
         mintedWallets[msg.sender]++;
         totalSupply++;
@@ -73,8 +72,8 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     mapping(uint => Trade) public trades;
     mapping(address => Trade[]) public userTrades;
     mapping(address => bool) public isTrading;
-
     Trade[] public allTrades;
+
     function getAlltrades() public view returns(uint){
         return allTrades.length;
     }
@@ -134,6 +133,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
             require(trades[_tradeId].isCompleted == false, "Trade ended already");
             delete trades[_tradeId];
             isTrading[msg.sender] = false;
+            isTrading[trades[_tradeId].dealer] = false;
             emit Cancel(msg.sender, _tradeId);
         } else if(msg.sender==trades[_tradeId].dealer){
             trades[_tradeId].dealerConfirm = false;

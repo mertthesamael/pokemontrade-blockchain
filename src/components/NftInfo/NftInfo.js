@@ -1,5 +1,4 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
-import styles from "./nftinfo.module.scss";
 
 const NftInfo = ({ token }) => {
   const theme = {
