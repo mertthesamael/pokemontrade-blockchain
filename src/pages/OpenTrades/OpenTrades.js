@@ -5,7 +5,7 @@ import { UserContext } from "../../store/context";
 
 const OpenTrades = () => {
   const { totalTrades } = useContext(UserContext);
-  
+  console.log(totalTrades)
   return (
     <Flex w="100%" flexDir="column" justify="center" align="center" h="100%">
       <Flex
@@ -19,10 +19,7 @@ const OpenTrades = () => {
       >
         {
       
-        totalTrades?.map((trade) => {(
-          
-          <Trade id="2" trade={trade} /> 
-        )})
+        totalTrades?.map((trade) => <Trade id="2" trade={trade} />)
       
         
         }
