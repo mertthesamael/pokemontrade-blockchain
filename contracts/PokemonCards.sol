@@ -7,9 +7,8 @@ import '../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721UR
 
 
 contract PokemonCards is ERC721URIStorage, Ownable {
-    
   
-    /***************** MINT SEQUENCE *****************/
+    /***************** MINT SEQUENCE ****************/
 
     event Minted(address indexed _signer, uint indexed _id);
     uint public totalSupply;
