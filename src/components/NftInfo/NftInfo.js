@@ -18,7 +18,7 @@ const NftInfo = ({ token }) => {
         <Image
           draggable="false"
           h="90%"
-          src={token?.properties.image.value}
+          src={token?.properties?.image.value}
         ></Image>
       </Flex>
       <Flex
@@ -31,17 +31,17 @@ const NftInfo = ({ token }) => {
       >
         <Box>
           <Text fontSize="35px" color="white" fontWeight="bolder">
-            {token?.properties.name.value}
+            {token?.properties?.name.value}
           </Text>
           <Text
             fontSize="20px"
             color="white"
             fontWeight="bolder"
-          >{`(${token?.properties.series.value})`}</Text>
+          >{`(${token?.properties?.series.value})`}</Text>
         </Box>
         <Flex minW="35rem" flexDir="column" gap="4rem">
           <Flex flexDir="column" gap="1rem">
-            {token?.properties.abilities.value.map((skill) => {
+            {token?.properties?.abilities.value.map((skill) => {
               return (
                 <Flex flexDir="column">
                   <Text fontSize="25px" fontWeight="bolder" color="white">
@@ -56,7 +56,7 @@ const NftInfo = ({ token }) => {
           </Flex>
           <Flex>
             <Text color="white" fontWeight="bolder" fontSize="40px">
-              {"HP - " + token?.properties.hp.value}
+              {"HP - " + token?.properties?.hp.value}
             </Text>
           </Flex>
         </Flex>

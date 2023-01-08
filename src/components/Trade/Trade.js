@@ -7,6 +7,7 @@ import { useGetData } from "../../hooks/useGetData";
 import { UserContext } from "../../store/context";
 import styles from "./trade.module.scss";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useContractEvent } from "wagmi";
 
 const Trade = ({ trade }) => {
   const [creatorUri, setCreatorUri] = useState();
@@ -54,20 +55,25 @@ const Trade = ({ trade }) => {
     }
   };
 const navigate = useNavigate()
-  const checkEvents = () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(ca, abi.abi, provider);
-    contract.on("Bid", () => {
+  useContractEvent({
+    address: ca,
+    abi: abi.abi,
+    eventName: 'Bid',
+    listener() {
+      web3Init()
+    },
+    once: true,
+  })
+  useContractEvent({
+    address: ca,
+    abi: abi.abi,
+    eventName: 'TradeCreated',
+    listener() {
       setLoading(false);
       web3Init();
-      navigate('/mytrade')
-    });
-    contract.on("TradeCreated", () => {
-      setLoading(false);
-      web3Init();
-    });
-  };
-
+    },
+    once: true,
+  })
   const bidTrade = async () => {
     setLoading(true)
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -90,7 +96,7 @@ const navigate = useNavigate()
 
   useEffect(() => {
     getUserNftWithAddr();
-    checkEvents();
+
   }, []);
   if (trade.creatorTokenId == 0 || trade.isCompleted == true) {
     return null;

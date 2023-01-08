@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useGetData } from "../hooks/useGetData";
 import abi from "../contracts/PokemonCards.sol/PokemonCards.json";
-import { ethers } from "ethers";
 import { useToast } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
+import { bgColors, colors, neumorph, neumorphInset } from "../styles/themeColors";
+import useGetContract from "../hooks/useGetContract";
 
 const UserContext = React.createContext({
   emptyValue: "",
@@ -18,6 +19,9 @@ export const UserContextWrapper = (props) => {
   const [isTrading, setIsTrading] = useState()
   const [loading, setLoading] = useState()
 
+  const contract = useGetContract(ca,abi.abi)
+
+
   const {address, isConnected} = useAccount()
   const toast = useToast();
   const [theme, setTheme] = useState({
@@ -28,62 +32,11 @@ export const UserContextWrapper = (props) => {
     pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
   })
 //background:'linear-gradient(145deg, #092240, #0b294c)'
-  const bgColors = {
-    Charmander: "#EA5C2B",
-    Bulbasaur: "#3C6255",
-    Squirtle: "#064663",
-    Pikachu: "#E5BA73",
-  };
- 
-const colors = {
-    Charmander: "#AE431E",
-    Bulbasaur: "#285430",
-    Squirtle: "#263159",
-    Pikachu: "#C58940",
-  };
 
-  const neumorph = {
-    Pikachu: {
-      background: "#E5BA73",
-      boxShadow: "19px 19px 37px #c39e62, -19px -19px 37px #ffd684",
-    },
-    Charmander: {
-      background: "#EA5C2B",
-      boxShadow: "19px 19px 37px #c74e25, -19px -19px 37px #ff6a31",
-    },
-    Bulbasaur: {
-      background: "#3C6255",
-      boxShadow: "19px 19px 37px #335348, -19px -19px 37px #457162",
-    },
-    Squirtle: {
-      background: "#064663",
-      boxShadow: "19px 19px 37px #053c54, -19px -19px 37px #075172",
-    },
-  };  
-  const neumorphInset = {
-    Pikachu: {
-      boxShadow: "inset 10px 12px 30px #c39e62, inset 500px 500px 800px #ffd684",
-    },
-    Charmander: {
-    
-      boxShadow: "inset 148px 154px 310px #c74e25, inset 1px 1px 100px #ff6a31",
-    },
-    Bulbasaur: {
-    
-      boxShadow: "inset 10px 12px 30px #335348, inset 500px 500px 800px #457162",
-    },
-    Squirtle: {
-    
-      boxShadow: "inset 10px 12px 30px #053c54, inset 500px 500px 800px #075172",
-    },
-    //inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869
-  };  
   const getIsTrading = async() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer =  provider.getSigner();
-    const signerAddr = await signer.getAddress()
-    const contract = new ethers.Contract(ca, abi.abi, signer);
-    const data = await contract.isTrading(signerAddr);
+
+
+    const data = await contract.isTrading(address);
     if(data){
       setIsTrading(true)
     }else{
@@ -92,12 +45,9 @@ const colors = {
   }
 
   const getUserNft = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const signerAddr = signer.getAddress();
-    const contract = new ethers.Contract(ca, abi.abi, signer);
+ 
     try{
-      const nfts = await contract.getAll(signerAddr);
+      const nfts = await  contract.getAll(address);
       const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
       setTokenUri(tokenUri);
       setUserTokenId(nfts[nfts.length - 1].toNumber());
@@ -109,9 +59,7 @@ const colors = {
   };
 
   const getCaData = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(ca, abi.abi, signer);
+  
     const allTrades = await contract.totalTrades();
     let emptyArr = [];
     for (let i = 1; i <= allTrades.toNumber(); i++) {
@@ -121,54 +69,61 @@ const colors = {
     setTotalTrades(emptyArr);
   };
 
-  
 
   const [trade, setTrade] = useState(false);
   const getUserTrade = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const signerAddr = await signer.getAddress();
-    const contract = new ethers.Contract(ca, abi.abi, signer);
-
     const numberOfTrades = await contract.getAlltrades();
     const array = [];
     for (let i = 0; i <= numberOfTrades.toNumber(); i++) {
       const element = await contract.trades(i);
-      if (element.dealer == signerAddr || element.creator == signerAddr) {
+      if (element.dealer == address || element.creator == address) {
         setTrade(element);
+      }else{
+        setTrade(false)
       }
     }
   };
 
 
 
-  const web3Init = () => {
+  const web3Init = async () => {
     setLoading(true)
-    getCaData();
-    getUserNft();
-    getUserTrade();
-     getIsTrading();
+    await getCaData();
+    await getUserNft();
+    await getIsTrading();
+    await getUserTrade();
     setLoading(false)
   };
 
   useEffect(() => {
-    web3Init()
-    data?.properties&&
-    setTheme({
-      navbarColor: colors[data?.properties?.name.value],
-      mainBackground:bgColors[data?.properties?.name.value],
-      neumorph: neumorph[data?.properties?.name.value],
-      pressed:neumorphInset[data?.properties?.name.value]
-
-  })
-  }, [address,data]);
-
-  return (
+        web3Init()
+        data?.properties&&
+        setTheme({
+          navbarColor: colors[data?.properties?.name.value],
+          mainBackground:bgColors[data?.properties?.name.value],
+          neumorph: neumorph[data?.properties?.name.value],
+          pressed:neumorphInset[data?.properties?.name.value]
+        })
+      
+        if(isConnected==false || userTokenId == false){
+          setTheme({
+            navbarColor: '#0A2647',
+            mainBackground:'#16213E',
+            neumorph: {background: "#0A2647",
+            boxShadow: "10px 10px 21px #051425, -10px -10px 21px #0f3869"},
+            pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
+          })
+        }
+        
+        
+      }, [contract,address,data,isConnected]);
+      
+      return (
     <UserContext.Provider
-      value={{
-        userToken: data,
-        loading: isLoading,
-        userTokenId: userTokenId,
+    value={{
+      userToken: data,
+      loading: isLoading,
+      userTokenId: userTokenId,
         totalTrades: totalTrades,
         ca: ca,
         trade: trade,
@@ -176,7 +131,8 @@ const colors = {
         web3Init: web3Init,
         isTrading:isTrading,
         web3Loading: loading,
-        theme:theme
+        theme:theme,
+      
       }}
     >
       {props.children}

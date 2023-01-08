@@ -9,7 +9,7 @@ const MyNft = () => {
 
   return (
     <Flex justify="center" align="center" w="100%" h="100%">
-      {loading?<Spinner/>:userToken?<NftInfo token={userToken}/>:
+      {loading?<Spinner/>:userToken && userToken.properties?<NftInfo token={userToken}/>:
       <Flex flexDir='column' gap='2rem' align='center'>
         <Text color='white' fontSize='30px' fontWeight='bolder'>You Don't Have Any NFT</Text>
         <NavLink to='/app'>

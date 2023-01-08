@@ -3,11 +3,13 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
+import { useContractEvent } from "wagmi";
 
 const CreateCard = () => {
-  const { userToken, userTokenId, ca, web3Init, theme } = useContext(UserContext);
+  const { userToken, userTokenId, ca, web3Init, theme, contract } = useContext(UserContext);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
+
 
   const createTrade = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -22,23 +24,21 @@ const CreateCard = () => {
       });
     }
   };
-  const checkEvents = () => {
-    setLoading(true);
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(ca, abi.abi, provider);
-    contract.on("TradeCreated", () => {
-      setLoading(false);
+
+  useContractEvent({
+    address: ca,
+    abi: abi.abi,
+    eventName: 'TradeCreated',
+    listener() {
       web3Init();
       toast({
         title:'Trade Opened !',
         status:'success'
       })
-    });
-  };
+    },
+    once: true,
+  })
 
-  useEffect(() => {
-    checkEvents();
-  }, []);
   if (userTokenId == 0) {
     return null;
   }
