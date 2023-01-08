@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 
 const CreateCard = () => {
-  const { userToken, userTokenId, ca, web3Init } = useContext(UserContext);
+  const { userToken, userTokenId, ca, web3Init, theme } = useContext(UserContext);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -35,28 +35,7 @@ const CreateCard = () => {
       })
     });
   };
-  const theme = {
-    Pikachu: {
-      borderRadius: "20px",
-      background: "#E5BA73",
-      boxShadow: "19px 19px 37px #c39e62, -19px -19px 37px #ffd684",
-    },
-    Charmander: {
-      borderRadius: "20px",
-      background: "#EA5C2B",
-      boxShadow: "19px 19px 37px #c74e25, -19px -19px 37px #ff6a31",
-    },
-    Bulbasaur: {
-      borderRadius: "20px",
-      background: "#3C6255",
-      boxShadow: "19px 19px 37px #335348, -19px -19px 37px #457162",
-    },
-    Squirtle: {
-      borderRadius: "20px",
-      background: "#064663",
-      boxShadow: "19px 19px 37px #053c54, -19px -19px 37px #075172",
-    },
-  };
+
   useEffect(() => {
     checkEvents();
   }, []);
@@ -64,7 +43,7 @@ const CreateCard = () => {
     return null;
   }
   return (
-    <Flex flexDir="column" p='2rem' gap='3rem' w="20rem" h="max-content" style={theme[userToken?.properties.name.value]}>
+    <Flex flexDir="column" p='2rem' gap='3rem' w="20rem" borderRadius='20px' h="max-content" style={theme.neumorph}>
       <Flex w="100%" justifyContent="center">
         <Image
           draggable="false"

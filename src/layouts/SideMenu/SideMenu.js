@@ -8,35 +8,22 @@ import styles from "./sidemenu.module.scss";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 import { ethers } from "ethers";
 import { WarningIcon } from "@chakra-ui/icons";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const SideMenu = () => {
-  const { isConnected, userToken, userAddr, web3Init, ca, isTrading, trade } = useContext(UserContext);
+  const { isConnected, userToken, userAddr, web3Init, ca, isTrading, trade,theme  } = useContext(UserContext);
  
-    
-
-
- 
-  const { menuState, onMenuState, connect } = useContext(LayoutContext);
+  const { menuState, onMenuState, connect} = useContext(LayoutContext);
   const colors = {
     Charmander: "#AE431E",
     Bulbasaur: "#285430",
     Squirtle: "#263159",
     Pikachu: "#C58940",
   };
-console.log(trade.dealerTokenId, trade.creatorTokenId)
-  const connectWal = () => {
-    web3Init();
-  };
+
   return (
     <Flex
       zIndex="2"
-      boxShadow={
-        menuState
-          ? userToken
-            ? `0 0 10px 10px ${colors[userToken.properties.name.value]}`
-            : "0 10px 50px 1px darkblue"
-          : ""
-      }
       className={styles.sideMenu}
       pos="relative"
       minW="15rem"
@@ -45,7 +32,7 @@ console.log(trade.dealerTokenId, trade.creatorTokenId)
       alignItems="center"
       p="2rem 0"
       h="6rem"
-      bgColor={userToken ? colors[userToken?.properties.name.value] : "#150050"}
+      bgColor={theme.navbarColor}
     >
       <Flex
         className={styles.navItems}
@@ -71,43 +58,10 @@ console.log(trade.dealerTokenId, trade.creatorTokenId)
           {isTrading&&<WarningIcon position='absolute' color={trade?.dealerTokenId?.toNumber() && trade.creatorTokenId.toNumber() && 'green'} top='0' right='0'/>}
         </NavLink>
         <Flex>
-          {isConnected ? (
-            <Button
-              maxW="6rem"
-              backdropFilter="blur(6px)"
-              color="white"
-              boxShadow="0 0px 5px 0px white"
-              background="rgba( 255, 255, 255, 0.05 )"
-              _hover={{
-                background: "white",
-                color: "black",
-                transform: "scale(1.1)",
-              }}
-            >
-              <Text
-                textOverflow="ellipsis"
-                overflow="hidden"
-                whiteSpace="nowrap"
-              >
-                {userAddr}
-              </Text>
-            </Button>
-          ) : (
-            <Button
-              onClick={connectWal}
-              backdropFilter="blur(6px)"
-              color="white"
-              boxShadow="0 0px 5px 0px white"
-              background="rgba( 255, 255, 255, 0.05 )"
-              _hover={{
-                background: "white",
-                color: "black",
-                transform: "scale(1.1)",
-              }}
-            >
-              Connect
-            </Button>
-          )}
+          <ConnectButton accountStatus={{
+    smallScreen: 'avatar',
+    largeScreen: 'full',
+  }} showBalance={false}/>
         </Flex>
       </Flex>
     </Flex>

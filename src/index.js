@@ -8,12 +8,18 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { UserContextWrapper } from "./store/context";
 import { LayoutContextWrapper } from "./store/layoutContext";
-
+import { WagmiConfig } from "wagmi";
+import { RainbowKitProvider,darkTheme,mdarkTheme } from "@rainbow-me/rainbowkit";
+import { wagmiClient,chains } from "./config/rainbowkit";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const client = new QueryClient();
 root.render(
   <BrowserRouter>
+      <WagmiConfig client={wagmiClient}>
+  <RainbowKitProvider  theme={darkTheme()} chains={chains}>
+
     <QueryClientProvider client={client}>
+
       <LayoutContextWrapper>
         <UserContextWrapper>
           <ChakraProvider>
@@ -24,6 +30,8 @@ root.render(
         </UserContextWrapper>
       </LayoutContextWrapper>
     </QueryClientProvider>
+  </RainbowKitProvider>
+      </WagmiConfig>
   </BrowserRouter>
 );
 

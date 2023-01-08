@@ -93,13 +93,13 @@ const Main = () => {
               margin="0 auto"
               w="90%"
               boxShadow={`${shadowY}px ${shadowX}px 20px 25px ${
-                cardStyle[userToken?.properties.name.value]?.color
+                cardStyle[userToken?.properties?.name.value]?.color
               }`}
               className={styles.dynamicShadow}
             ></Box>
             <Image
               draggable="false"
-              src={userToken?.properties.image.value}
+              src={userToken?.properties?.image.value}
             ></Image>
           </Tilt>
         </Flex>
