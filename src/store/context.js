@@ -21,12 +21,13 @@ export const UserContextWrapper = (props) => {
   const {address, isConnected} = useAccount()
   const toast = useToast();
   const [theme, setTheme] = useState({
-    navbarColor: 'darkblue',
+    navbarColor: '#0A2647',
     mainBackground:'#16213E',
-    neumorph: {background: "#16213E",
-    boxShadow: "19px 19px 37px #131c35, -19px -19px 37px #192647"},
+    neumorph: {background: "#0A2647",
+    boxShadow: "10px 10px 21px #051425, -10px -10px 21px #0f3869"},
+    pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
   })
-
+//background:'linear-gradient(145deg, #092240, #0b294c)'
   const bgColors = {
     Charmander: "#EA5C2B",
     Bulbasaur: "#3C6255",
@@ -58,6 +59,24 @@ const colors = {
       background: "#064663",
       boxShadow: "19px 19px 37px #053c54, -19px -19px 37px #075172",
     },
+  };  
+  const neumorphInset = {
+    Pikachu: {
+      boxShadow: "inset 10px 12px 30px #c39e62, inset 500px 500px 800px #ffd684",
+    },
+    Charmander: {
+    
+      boxShadow: "inset 148px 154px 310px #c74e25, inset 1px 1px 100px #ff6a31",
+    },
+    Bulbasaur: {
+    
+      boxShadow: "inset 10px 12px 30px #335348, inset 500px 500px 800px #457162",
+    },
+    Squirtle: {
+    
+      boxShadow: "inset 10px 12px 30px #053c54, inset 500px 500px 800px #075172",
+    },
+    //inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869
   };  
   const getIsTrading = async() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -131,12 +150,16 @@ const colors = {
      getIsTrading();
     setLoading(false)
   };
+
   useEffect(() => {
     web3Init()
+    data?.properties&&
     setTheme({
       navbarColor: colors[data?.properties?.name.value],
       mainBackground:bgColors[data?.properties?.name.value],
       neumorph: neumorph[data?.properties?.name.value],
+      pressed:neumorphInset[data?.properties?.name.value]
+
   })
   }, [address,data]);
 

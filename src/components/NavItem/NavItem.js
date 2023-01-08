@@ -14,19 +14,19 @@ const NavItem = ({title}) => {
     const neumorph = {
         Pikachu: {
           background: theme.navbarColor,
-          boxShadow: "12px 12px 24px #a77436, -12px -12px 24px #e39e4a",
+          boxShadow: "10px 10px 21px #a77436, -10px -10px 20px #e39e4a",
         },
         Charmander: {
           background: theme.navbarColor,
-          boxShadow: "10px 11px 21px #94391a, -10px -10px 20px #c84d23",
+          boxShadow: "10px 10px 21px #94391a, -10px -10px 20px #c84d23",
         },
         Bulbasaur: {
           background: theme.navbarColor,
-          boxShadow: "10px 11px 21px #224729, -10px -10px 20px #2e6137",
+          boxShadow: "10px 10px 21px #224729, -10px -10px 20px #2e6137",
         },
         Squirtle: {
           background: theme.navbarColor,
-          boxShadow: "10px 11px 21px #202a4c, -10px -10px 20px #2c3866",
+          boxShadow: "10px 10px 21px #202a4c, -10px -10px 20px #2c3866",
         }}
 
 
@@ -38,9 +38,9 @@ const NavItem = ({title}) => {
             selected(location.pathname.slice(1))
         }
     return(
-        <Box borderRadius='10px' p='0.7rem'
-        style={neumorph[userToken?.properties?.name.value]}>
-            <Text fontWeight='bolder' onClick={locationHandler} color='white' fontSize='1rem'>{title}</Text>
+        <Box w='8rem' textAlign='center' borderRadius='10px' p='0.7rem'  border={location.pathname.slice(1) == title.toLowerCase() && '2px solid white'}
+        style={userToken?.properties?neumorph[userToken?.properties?.name.value]:theme.neumorph} >
+            <Text  fontWeight='bolder' onClick={locationHandler} color='white' fontSize='1rem'>{title}</Text>
         </Box>
     )
 

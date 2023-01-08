@@ -42,19 +42,19 @@ const SideMenu = () => {
         align="center"
       >
         <NavLink to="/app">
-          <NavItem title="Mint" />
+          <NavItem title="App" />
         </NavLink>
         <NavLink to="/mynft">
-          <NavItem title="My NFT" />
+          <NavItem title="MyNft" />
         </NavLink>
         <NavLink to="/trades">
-          <NavItem title="Open Trades" />
+          <NavItem title="Trades" />
         </NavLink>
         <NavLink to="/trade">
           <NavItem title="Trade" />
         </NavLink>
         <NavLink style={{position:'relative'}} to="/mytrade">
-          <NavItem title="My Trades" />
+          <NavItem title="MyTrade" />
           {isTrading&&<WarningIcon position='absolute' color={trade?.dealerTokenId?.toNumber() && trade.creatorTokenId.toNumber() && 'green'} top='0' right='0'/>}
         </NavLink>
         <Flex>

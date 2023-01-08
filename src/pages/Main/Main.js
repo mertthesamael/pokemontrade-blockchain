@@ -61,7 +61,7 @@ const Main = () => {
       </Flex>
 
       <Flex
-        style={userToken && { visibility: "visible" }}
+        style={userToken?.properties && { visibility: "visible" }}
         visibility="hidden"
         transform="all 1s ease"
         pos="absolute"
