@@ -30,5 +30,5 @@ So this was the real pain. First I started with ethers. I had lots of errors and
 ## As I said, This Is A Fan Made Project And Do Not Have Any Connection With Pokémon Company. No Copyright Infringement Intended
 
 
-### Made with :heart: of the Pokémon.
+### Made with :heart:, for the Pokémon.
 
