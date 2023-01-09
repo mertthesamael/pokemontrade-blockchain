@@ -9,40 +9,16 @@ import styles from "./trade.module.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContractEvent } from "wagmi";
 
-const Trade = ({ trade }) => {
+const Trade = ({ trade, showComple }) => {
   const [creatorUri, setCreatorUri] = useState();
   const [dealerUri, setDealerUri] = useState();
   const [loading, setLoading] = useState();
-  const { ca, web3Init, userToken, trade:userTrade, web3Loading } = useContext(UserContext);
+  const { ca, web3Init, userToken, trade:userTrade, web3Loading, contract, theme, address } = useContext(UserContext);
   const { data: creatorToken } = useGetData(creatorUri);
   const { data: dealerToken } = useGetData(dealerUri);
-  const theme = {
-    Pikachu: {
-      borderRadius: "10px",
-      background: "#E5BA73",
-      boxShadow: "19px 19px 37px #c39e62, -19px -19px 37px #ffd684",
-    },
-    Charmander: {
-      borderRadius: "10px",
-      background: "#EA5C2B",
-      boxShadow: "19px 19px 37px #c74e25, -19px -19px 37px #ff6a31",
-    },
-    Bulbasaur: {
-      borderRadius: "10px",
-      background: "#3C6255",
-      boxShadow: "19px 19px 37px #335348, -19px -19px 37px #457162",
-    },
-    Squirtle: {
-      borderRadius: "10px",
-      background: "#064663",
-      boxShadow: "19px 19px 37px #053c54, -19px -19px 37px #075172",
-    },
-  };
+
   const toast = useToast();
   const getUserNftWithAddr = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(ca, abi.abi, signer);
     const nfts = await contract.getAll(trade.creator);
     const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
     setCreatorUri(tokenUri);
@@ -60,7 +36,9 @@ const navigate = useNavigate()
     abi: abi.abi,
     eventName: 'Bid',
     listener() {
+      setLoading(false)
       web3Init()
+      navigate('/mytrade')
     },
     once: true,
   })
@@ -76,12 +54,7 @@ const navigate = useNavigate()
   })
   const bidTrade = async () => {
     setLoading(true)
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const signerAddr = signer.getAddress();
-    const contract = new ethers.Contract(ca, abi.abi, signer);
-    const nfts = await contract.getAll(signerAddr);
-
+    const nfts = await contract.getAll(address);
     const nftId = await nfts[nfts.length - 1].toNumber();
     try {
       await contract.bidTrade(trade.tradeId.toNumber(), nftId);
@@ -98,9 +71,7 @@ const navigate = useNavigate()
     getUserNftWithAddr();
 
   }, []);
-  if (trade.creatorTokenId == 0 || trade.isCompleted == true) {
-    return null;
-  }
+
   return (
     <Flex
       className={styles.trade}
@@ -110,10 +81,14 @@ const navigate = useNavigate()
       justify="space-between"
     >
       <Flex h="100%" w="100%" flexDir="column">
+        <Flex>
+        
+        </Flex>
         <Flex
           p="1rem"
-          w="max-content"
-          style={theme[userToken?.properties.name.value]}
+          minW="8rem"
+          w='max-content'
+          style={theme.neumorph}
           h="100%"
         >
          {web3Loading?<Spinner></Spinner>: <Image
@@ -122,12 +97,15 @@ const navigate = useNavigate()
             src={creatorToken?.properties.image.value}
           />}
         </Flex>
-        <Flex p="0 1.5rem">
+        <Flex p="0 1.1rem">
           <Text
             color="white"
             textOverflow="ellipsis"
             overflow="hidden"
             whiteSpace="nowrap"
+            border={address == trade.creator ? '1px solid white' : ''}
+            borderRadius='15px'
+            p='0 5px'
             w="100px"
           >
             {trade.creator}
@@ -162,9 +140,10 @@ const navigate = useNavigate()
           <>
             <Flex
               p="1rem"
-              w="max-content"
+              minW="8rem"
+              w='max-content'
               justify="flex-end"
-              style={theme[userToken?.properties.name.value]}
+              style={theme.neumorph}
               h="100%"
             >
             {web3Loading?<Spinner /> : <Image
@@ -173,13 +152,16 @@ const navigate = useNavigate()
                 src={dealerToken?.properties.image.value}
               />}
             </Flex>
-            <Flex p="0 0.8rem" justify="flex-end">
+            <Flex p="0 1rem" justify="flex-end">
               <Text
                 color="white"
                 textOverflow="ellipsis"
                 overflow="hidden"
                 whiteSpace="nowrap"
+                border={address == trade.dealer ? '1px solid white' : ''}
+                borderRadius='15px'
                 w="100px"
+                p='0 5px'
               >
                 {trade.dealer}
               </Text>

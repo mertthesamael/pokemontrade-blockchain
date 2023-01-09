@@ -5,3 +5,12 @@
     box-shadow:  19px 19px 37px #c39e62,
                  -19px -19px 37px #ffd684;
 }
+
+
+@media screen and (max-width: 1200px ){
+    .nftInfoWrapper{
+        display: flex;
+        flex-direction: column;
+        zoom: 0.7;
+    }
+}

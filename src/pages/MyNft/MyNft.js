@@ -3,7 +3,6 @@ import { useContext } from "react";
 import { UserContext } from "../../store/context";
 import NftInfo from "../../components/NftInfo/NftInfo";
 import { NavLink } from "react-router-dom";
-
 const MyNft = () => {
   const { userToken, loading } = useContext(UserContext);
 

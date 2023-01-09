@@ -4,7 +4,9 @@
     & .navItems{
     }
 }
-
+.menuIcon{
+    display: none!important;
+}
 .menuBox{
     background: rgba( 255, 255, 255, 0.05 );
 box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
@@ -24,8 +26,11 @@ visibility: hidden;
 
 
 @media screen and (max-width: 700px){
+    .navItems{
+        display: none!important;
+    }
     
-    .menuBox{
-        visibility: visible;
+    .menuIcon{
+        display: flex!important;
     }
 }

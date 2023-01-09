@@ -7,7 +7,7 @@ import { LayoutContext } from "../../store/layoutContext";
 import styles from "./sidemenu.module.scss";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 import { ethers } from "ethers";
-import { WarningIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, WarningIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const SideMenu = () => {
@@ -20,26 +20,32 @@ const SideMenu = () => {
     Squirtle: "#263159",
     Pikachu: "#C58940",
   };
-
+  const menuStateHandler = () => {
+    console.log(menuState)
+    return onMenuState()
+  }
   return (
     <Flex
       zIndex="2"
       className={styles.sideMenu}
       pos="relative"
       minW="15rem"
-      flexDir="column"
       justifyContent="center"
       alignItems="center"
-      p="2rem 0"
+      p="2rem 1rem"
       h="6rem"
       bgColor={theme.navbarColor}
     >
+      <Flex className={styles.menuIcon} onClick={menuStateHandler}  w='100%'>
+        <HamburgerIcon h='2rem'  w='2rem' color='white'></HamburgerIcon>
+      </Flex>
       <Flex
-        className={styles.navItems}
         flexDir="row"
         w="100%"
         justify="space-evenly"
         align="center"
+        className={styles.navItems}
+
       >
         <NavLink to="/app">
           <NavItem title="App" />
@@ -57,13 +63,13 @@ const SideMenu = () => {
           <NavItem title="MyTrade" />
           {isTrading&&<WarningIcon position='absolute' color={trade?.dealerTokenId?.toNumber() && trade.creatorTokenId.toNumber() && 'green'} top='0' right='0'/>}
         </NavLink>
-        <Flex>
+      </Flex>
+        <Flex w='20%'>
           <ConnectButton accountStatus={{
     smallScreen: 'avatar',
     largeScreen: 'full',
   }} showBalance={false}/>
         </Flex>
-      </Flex>
     </Flex>
   );
 };

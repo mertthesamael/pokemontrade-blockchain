@@ -9,6 +9,7 @@ import MyNft from "./pages/MyNft/MyNft";
 import OpenTrades from "./pages/OpenTrades/OpenTrades";
 import CreateTrade from "./pages/CreateTrade/CreateTrade";
 import MyTrade from "./pages/MyTrade/MyTrade";
+import MobileMenu from "./layouts/MobileMenu/MobileMenu";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         path="/app"
         element={
           <Wrapper>
+            <MobileMenu />
             <SideMenu />
             <Body>
               <Main />
@@ -30,6 +32,8 @@ function App() {
         path="/mynft"
         element={
           <Wrapper>
+            <MobileMenu />
+
             <SideMenu />
             <Body>
               <MyNft />
@@ -42,6 +46,8 @@ function App() {
         path="/trades"
         element={
           <Wrapper>
+            <MobileMenu />
+
             <SideMenu />
             <Body>
               <OpenTrades />
@@ -53,6 +59,8 @@ function App() {
         path="/trade"
         element={
           <Wrapper>
+            <MobileMenu />
+
             <SideMenu />
             <Body>
               <CreateTrade />
@@ -64,6 +72,8 @@ function App() {
         path="/mytrade"
         element={
           <Wrapper>
+            <MobileMenu />
+
             <SideMenu />
             <Body>
               <MyTrade />

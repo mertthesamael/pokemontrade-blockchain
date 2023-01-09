@@ -1,20 +1,18 @@
-import { Box, Button, Flex, Image, Spinner, useToast } from "@chakra-ui/react";
+import { Button, Flex, Image, Progress, Spinner, StylesProvider, useToast } from "@chakra-ui/react";
 import Trade from "../Trade/Trade";
 import { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { UserContext } from "../../store/context";
-import checkMark from "../../assets/checkIcon.svg";
 import switchIcon from "../../assets/switchIcon.svg";
 import { useNavigate } from "react-router-dom";
-import { CancelledError } from "react-query";
 import { useContractEvent } from "wagmi";
-
+import styles from "./usertrade.module.scss"
 const UserTrade = () => {
-  const { ca, trade, web3Init, loading:web3Loading, isConnected } = useContext(UserContext);
+  const { ca, trade, web3Init, loading:web3Loading, isConnected,contract,address } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [creatorApplied, setCreatorApplied] = useState(false)
-  const [dealerApplied, setDealerApplied] = useState(false)
+  const [creatorApplied, setCreatorApplied] = useState(trade.creatorConfirm)
+  const [dealerApplied, setDealerApplied] = useState(trade.delaerConfirm)
   const [creatorLoading, setCreatorLoading] = useState(false)
   const [dealerLoading, setDealerLoading] = useState(false)
   const [finalizeLoading, setFinalizeLoading] = useState(false)
@@ -24,14 +22,9 @@ const UserTrade = () => {
   const toast = useToast();
   const applyTrade = async () => {
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const signerAddr = await signer.getAddress()
-    const contract = new ethers.Contract(ca, abi.abi, signer);
-    console.log(signerAddr, trade.creator)
-    if(signerAddr == trade.creator){
+    if(address == trade.creator){
        setCreatorLoading(true)
-    }else if(signerAddr == trade.dealer){
+    }else if(address == trade.dealer){
        setDealerLoading(true)
     }
     try {
@@ -54,6 +47,7 @@ const UserTrade = () => {
     const contract = new ethers.Contract(ca, abi.abi, signer);
     try {
       await contract.cancelTrade(trade.tradeId)
+      
     } catch (err) {
       toast({
         title: err.reason,
@@ -89,15 +83,15 @@ const UserTrade = () => {
     abi: abi.abi,
     eventName: 'Cancel',
     listener() {
+      web3Init()
       setLoading(false);
       setCancelLoading(false);
-      web3Init();
-      navigate('/trades');
+     
     },
     once: true,
   })
 
-  useContractEvent({
+useContractEvent({ 
     address: ca,
     abi: abi.abi,
     eventName: 'CreatorConfirmed',
@@ -110,26 +104,27 @@ const UserTrade = () => {
         title:'Creator Confirmed !',
         status:'success'
       })
+      setCreatorApplied(true)
     },
     once: true,
   })
-  useContractEvent({
+useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'DealerConfirmed',
     listener() {
       setLoading(false);
       setDealerLoading(false)
-      web3Init();
       toast({
         title:'Dealer Confirmed !',
         status:'success'
       })
+      setDealerApplied(true)
     },
     once: true,
   })
   
-  useContractEvent({
+useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'FinalizeTrade',
@@ -143,11 +138,13 @@ const UserTrade = () => {
   })
   
 
+
+
   if (trade.creatorTokenId == 0 || trade.isCompleted == true) {
     return null;
   }
   return (
-    <Flex w="80%" h="28rem" gap='2.5rem' flexDir="column">
+    <Flex className={styles.userTrade} w="80%" h="28rem" gap='1rem' flexDir="column">
       {web3Loading? <Spinner />
         :
         <>
@@ -158,39 +155,10 @@ const UserTrade = () => {
             {creatorLoading ? (
               <Spinner />
               ) : (
-                <Image
-                cursor="pointer"
-                w="100px"
-                onClick={applyTrade}
-                filter={
-                  trade.creatorConfirm
-                  ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(-3px 1px 0px black)"
-                  : "invert(0.5) drop-shadow(-3px 1px 0px black)"
-                }
-                zIndex="1"
-                invert={0.2}
-                maxH="100%"
-                src={checkMark}
-                ></Image>
+               <Button border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 )}
                         </Flex>
-          <Box
-            w="100%"
-            h="0.5rem"
-            pos="relative"
-            left="-0.2rem"
-            zIndex="0"
-            boxShadow={"-2px 2px 0px 0px black"}
-            bgColor={trade.creatorConfirm? "#4BB543" : "grey"}
-            transition="all 1s ease"
-            >
-            <Box
-              transition="all 1s ease"
-              w={ trade.creatorConfirm ? "100%" : "0%"}
-              h="100%"
-              bgColor="#4BB543"
-              ></Box>
-          </Box>
+                        <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={creatorLoading} size='sm' value={trade.creatorConfirm || creatorApplied? 100: 0}/>
         </Flex>
         <Flex w="max-content" h="100%" justify="center" align="center">
           {finalizeLoading?<Spinner></Spinner>:<Image
@@ -199,8 +167,8 @@ const UserTrade = () => {
             w="300px"
             maxH="100%"
             filter={
-              trade.creatorConfirm  == true
-              ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(3px 1px 0px black)"
+              trade.creatorConfirm || (creatorApplied && dealerApplied)
+              ? "invert(52%) sepia(35%) saturate(637%) hue-rotate(95deg) brightness(95%) contrast(96%)"
               : "invert(0.5) drop-shadow(3px 1px 0px black)"
             }
             src={switchIcon}
@@ -208,39 +176,13 @@ const UserTrade = () => {
         </Flex>
 
         <Flex w="100%" h="100%" justify="flex-end" align="center">
-          <Flex
-            w="100%"
-            justify="flex-end"
-            h="0.5rem"
-            pos="relative"
-            left="0.2rem"
-            boxShadow={"2px 2px 0px 0px black"}
-            bgColor={ trade.dealerConfirm ? "#4BB543" : "grey"}
-            transition="all 1s ease"
-            >
-            <Box
-              transition="all 1s ease"
-              w={trade.dealerConfirm ? "100%" : "0%"}
-              h="100%"
-              bgColor="#4BB543"
-              ></Box>
-          </Flex>
+            <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={dealerLoading} size='sm' value={trade.dealerConfirm|| dealerApplied? 100: 0}/>
+          
           <Flex maxH="100%">
             {dealerLoading? (
               <Spinner />
               ) : (
-                <Image
-                onClick={applyTrade}
-                cursor="pointer"
-                w="100px"
-                filter={
-                  trade.dealerConfirm == true
-                  ? "invert(56%) sepia(91%) saturate(371%) hue-rotate(68deg) brightness(92%) contrast(80%) drop-shadow(3px 1px 0px black)"
-                  : "invert(0.5) drop-shadow(3px 1px 0px black)"
-                }
-                maxH="100%"
-                src={checkMark}
-                />
+                <Button border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 
                 )}
           </Flex>

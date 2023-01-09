@@ -1,13 +1,13 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { UserContext } from "../../store/context";
-
+import styles from "./nftinfo.module.scss"
 const NftInfo = ({ token }) => {
   const {theme} = useContext(UserContext)
 
 
   return (
-    <Flex gap="3rem">
+    <Flex className={styles.nftInfoWrapper} gap="3rem">
       <Flex
         justify="center"
         p="2rem"

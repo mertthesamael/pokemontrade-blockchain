@@ -11,10 +11,11 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0xb8ACE684Cb0290fe5F42B602fe01B238dfF804F7";
+  const ca = "0xF4f64A4C3bd7C35E440Cdc5063310bcAc5F018C5";
   const [tokenUri, setTokenUri] = useState();
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
+  const [completedTrades, setCompletedTrades] = useState()
   const { data, isLoading } = useGetData(tokenUri);
   const [isTrading, setIsTrading] = useState()
   const [loading, setLoading] = useState()
@@ -62,11 +63,17 @@ export const UserContextWrapper = (props) => {
   
     const allTrades = await contract.totalTrades();
     let emptyArr = [];
+    let completedOnes = []
     for (let i = 1; i <= allTrades.toNumber(); i++) {
       let index = await contract.trades(i);
-      emptyArr.push(index);
+      if(index.isCompleted==true){
+        completedOnes.push(index)
+      }else if(index.isCompleted==false&&index.creatorTokenId.toNumber()!==0){
+        emptyArr.push(index);
+      }
     }
     setTotalTrades(emptyArr);
+    setCompletedTrades(completedOnes)
   };
 
 
@@ -88,10 +95,10 @@ export const UserContextWrapper = (props) => {
 
   const web3Init = async () => {
     setLoading(true)
-    await getCaData();
-    await getUserNft();
-    await getIsTrading();
-    await getUserTrade();
+    getUserTrade();
+ getCaData();
+  getUserNft();
+ getIsTrading();
     setLoading(false)
   };
 
@@ -132,6 +139,9 @@ export const UserContextWrapper = (props) => {
         isTrading:isTrading,
         web3Loading: loading,
         theme:theme,
+        contract:contract,
+        address:address,
+        completedTrades:completedTrades
       
       }}
     >

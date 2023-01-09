@@ -1,12 +1,13 @@
 import { Flex, Text } from "@chakra-ui/react";
 import Trade from "../../components/Trade/Trade";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
-
+import styles from "./opentrades.module.scss"
 const OpenTrades = () => {
-  const { totalTrades } = useContext(UserContext);
+  const { totalTrades, completedTrades,address } = useContext(UserContext);
+ 
 
-  return (
+  return (  
     <Flex w="100%" flexDir="column" justify="center" align="center" h="100%">
       <Flex
         flexDir="column"
@@ -16,13 +17,13 @@ const OpenTrades = () => {
         w="100%"
         h="100%"
         overflowY="auto"
+        className={styles.openTrades}
       >
         {
-      
         totalTrades?.map((trade) => <Trade id="2" trade={trade} />)
-      
         
-        }
+      }
+     
       </Flex>
     </Flex>
   );
