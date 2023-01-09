@@ -7,29 +7,22 @@ import { useGetData } from "../../hooks/useGetData";
 import { UserContext } from "../../store/context";
 import styles from "./trade.module.scss";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContractEvent } from "wagmi";
+import { useContractEvent, useContractRead } from "wagmi";
+import { useGetContractData } from "../../hooks/useGetContractData";
 
-const Trade = ({ trade, showComple }) => {
+const Trade = ({ trade }) => {
   const [creatorUri, setCreatorUri] = useState();
   const [dealerUri, setDealerUri] = useState();
   const [loading, setLoading] = useState();
   const { ca, web3Init, userToken, trade:userTrade, web3Loading, contract, theme, address } = useContext(UserContext);
-  const { data: creatorToken } = useGetData(creatorUri);
-  const { data: dealerToken } = useGetData(dealerUri);
+  const {data:_creatorToken} = useGetContractData("tokenURI",trade.creatorTokenId.toNumber(),ca)
+  const {data:_dealerToken} = useGetContractData("tokenURI",trade.dealerTokenId.toNumber(),ca)
+  const { data: creatorToken } = useGetData(_creatorToken);
+  const { data: dealerToken } = useGetData(_dealerToken);
+
 
   const toast = useToast();
-  const getUserNftWithAddr = async () => {
-    const nfts = await contract.getAll(trade.creator);
-    const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
-    setCreatorUri(tokenUri);
-    if (trade.dealerTokenId.toNumber() !== 0) {
-      const dealerTokens = await contract.getAll(trade.dealer);
-      const dealerTokenUri = await contract.tokenURI(
-        dealerTokens[dealerTokens.length - 1].toNumber()
-      );
-      setDealerUri(dealerTokenUri);
-    }
-  };
+
 const navigate = useNavigate()
   useContractEvent({
     address: ca,
@@ -37,8 +30,8 @@ const navigate = useNavigate()
     eventName: 'Bid',
     listener() {
       setLoading(false)
+     
       web3Init()
-      navigate('/mytrade')
     },
     once: true,
   })
@@ -50,8 +43,20 @@ const navigate = useNavigate()
       setLoading(false);
       web3Init();
     },
+   
     once: true,
   })
+  const contractRead = useContractRead({
+    address: ca,
+    abi: abi.abi,
+    functionName: 'tokenURI',
+    args:[2],
+    onSuccess(data) {
+      console.log('Success', data)
+    },
+  })
+
+
   const bidTrade = async () => {
     setLoading(true)
     const nfts = await contract.getAll(address);
@@ -68,7 +73,9 @@ const navigate = useNavigate()
   };
 
   useEffect(() => {
-    getUserNftWithAddr();
+ 
+    web3Init()
+
 
   }, []);
 

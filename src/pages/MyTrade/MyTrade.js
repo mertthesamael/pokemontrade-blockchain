@@ -9,7 +9,7 @@ import styles from "./mytrade.module.scss"
 const MyTrade = () => {
   const { trade,completedTrades,address } = useContext(UserContext);
   let tsx = completedTrades?.filter(x=> x.creator == address || x.dealer == address)
-console.log(tsx)
+
  
   const navigate = useNavigate();
   const navigateUser = (path) => {

@@ -5,7 +5,7 @@ import { UserContext } from "../../store/context";
 import styles from "./opentrades.module.scss"
 const OpenTrades = () => {
   const { totalTrades, completedTrades,address } = useContext(UserContext);
- 
+ console.log(totalTrades)
 
   return (  
     <Flex w="100%" flexDir="column" justify="center" align="center" h="100%">

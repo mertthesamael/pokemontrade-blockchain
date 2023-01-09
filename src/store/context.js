@@ -5,6 +5,7 @@ import { useToast } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 import { bgColors, colors, neumorph, neumorphInset } from "../styles/themeColors";
 import useGetContract from "../hooks/useGetContract";
+import { useGetContractData } from "../hooks/useGetContractData";
 
 const UserContext = React.createContext({
   emptyValue: "",
@@ -12,17 +13,16 @@ const UserContext = React.createContext({
 
 export const UserContextWrapper = (props) => {
   const ca = "0xF4f64A4C3bd7C35E440Cdc5063310bcAc5F018C5";
-  const [tokenUri, setTokenUri] = useState();
+
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
   const [completedTrades, setCompletedTrades] = useState()
-  const { data, isLoading } = useGetData(tokenUri);
-  const [isTrading, setIsTrading] = useState()
+  const [userTotalTokens, setUserTotalTokens] = useState(0)
   const [loading, setLoading] = useState()
-
+  
   const contract = useGetContract(ca,abi.abi)
-
-
+  
+  
   const {address, isConnected} = useAccount()
   const toast = useToast();
   const [theme, setTheme] = useState({
@@ -32,35 +32,18 @@ export const UserContextWrapper = (props) => {
     boxShadow: "10px 10px 21px #051425, -10px -10px 21px #0f3869"},
     pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
   })
-//background:'linear-gradient(145deg, #092240, #0b294c)'
+  //background:'linear-gradient(145deg, #092240, #0b294c)'
+  const defaultUserToken = () => {
+      try{
+        return setUserTokenId(userTokens[userTokens.length-1].toNumber())
+      }catch{
+        return setUserTokenId(-1)
 
-  const getIsTrading = async() => {
-
-
-    const data = await contract.isTrading(address);
-    if(data){
-      setIsTrading(true)
-    }else{
-      setIsTrading(false)
-    }
+      }
   }
-
-  const getUserNft = async () => {
- 
-    try{
-      const nfts = await  contract.getAll(address);
-      const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
-      setTokenUri(tokenUri);
-      setUserTokenId(nfts[nfts.length - 1].toNumber());
-    
-    }catch(err){
-      setTokenUri('');
-      setUserTokenId('');
-    }
-  };
-
+  const {data:allTrades} = useGetContractData("totalTrades",null,ca)
   const getCaData = async () => {
-  
+    
     const allTrades = await contract.totalTrades();
     let emptyArr = [];
     let completedOnes = []
@@ -75,6 +58,14 @@ export const UserContextWrapper = (props) => {
     setTotalTrades(emptyArr);
     setCompletedTrades(completedOnes)
   };
+  const {data:isTrading} = useGetContractData("isTrading",address,ca)
+  const {data:userTokens} = useGetContractData("getAll",address,ca)
+  const {data:tokenUri} = useGetContractData("tokenURI",userTokenId,ca)
+  const { data, isLoading } = useGetData(tokenUri);
+
+  
+  
+  
 
 
   const [trade, setTrade] = useState(false);
@@ -97,22 +88,15 @@ export const UserContextWrapper = (props) => {
     setLoading(true)
     getUserTrade();
  getCaData();
-  getUserNft();
- getIsTrading();
+
     setLoading(false)
   };
 
   useEffect(() => {
         web3Init()
-        data?.properties&&
-        setTheme({
-          navbarColor: colors[data?.properties?.name.value],
-          mainBackground:bgColors[data?.properties?.name.value],
-          neumorph: neumorph[data?.properties?.name.value],
-          pressed:neumorphInset[data?.properties?.name.value]
-        })
-      
-        if(isConnected==false || userTokenId == false){
+       
+        
+        if(isConnected==false){
           setTheme({
             navbarColor: '#0A2647',
             mainBackground:'#16213E',
@@ -120,10 +104,18 @@ export const UserContextWrapper = (props) => {
             boxShadow: "10px 10px 21px #051425, -10px -10px 21px #0f3869"},
             pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
           })
+        }else{
+          defaultUserToken()
+          setTheme({
+            navbarColor: colors[data?.properties?.name.value],
+            mainBackground:bgColors[data?.properties?.name.value],
+            neumorph: neumorph[data?.properties?.name.value],
+            pressed:neumorphInset[data?.properties?.name.value]
+          })
         }
         
         
-      }, [contract,address,data,isConnected]);
+      }, [contract,address,data,isConnected,tokenUri]);
       
       return (
     <UserContext.Provider
