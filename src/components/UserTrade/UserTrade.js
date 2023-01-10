@@ -128,7 +128,7 @@ useContractEvent({
     abi: abi.abi,
     eventName: 'FinalizeTrade',
     listener() {
-      navigate("/mynft");
+      
       setLoading(false);
       setFinalizeLoading(false)
       web3Init();

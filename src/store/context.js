@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { bgColors, colors, neumorph, neumorphInset } from "../styles/themeColors";
 import useGetContract from "../hooks/useGetContract";
 import { useGetContractData } from "../hooks/useGetContractData";
+import { ethers } from "ethers";
 
 const UserContext = React.createContext({
   emptyValue: "",
@@ -37,9 +38,10 @@ export const UserContextWrapper = (props) => {
     }
   };
   const getIsTrading = async() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contractt = new ethers.Contract(ca, abi.abi, provider);
 
-
-    const data = await contract.isTrading(address);
+    const data = await contractt.isTrading(address);
     if(data){
       setIsTrading(true)
     }else{
@@ -64,12 +66,16 @@ export const UserContextWrapper = (props) => {
 
       }
   }
-  const {data:allTrades} = useGetContractData("totalTrades",null,ca)
+
+
   const getCaData = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contractt = new ethers.Contract(ca, abi.abi, provider);
+    const allTrades = await contractt.totalTrades();
     let emptyArr = [];
     let completedOnes = []
     for (let i = 1; i <= allTrades.toNumber(); i++) {
-      let index = await contract.trades(i);
+      let index = await contractt.trades(i);
       if(index.isCompleted==true){
         completedOnes.push(index)
       }else if(index.isCompleted==false&&index.creatorTokenId.toNumber()!==0){
@@ -79,27 +85,28 @@ export const UserContextWrapper = (props) => {
     setTotalTrades(emptyArr);
     setCompletedTrades(completedOnes)
   };
-  const [trade, setTrade] = useState(false);
-
+  
   const {data:userTokens} = useGetContractData("getAll",address,ca)
   const { data, isLoading } = useGetData(tokenUri);
-
-
+  
+  const [trade, setTrade] = useState(false);
   const getUserTrade = async () => {
-    const numberOfTrades = await contract.getAlltrades();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contractt = new ethers.Contract(ca, abi.abi, provider);
+    const numberOfTrades = await contractt.getAlltrades();
     const array = [];
     for (let i = 0; i <= numberOfTrades.toNumber(); i++) {
-      const element = await contract.trades(i);
-      if (element.dealer == address || element.creator == address) {
+      const element = await contractt.trades(i);
+      if (element.dealer == address || element.creator == address && element.creatorTokenId !==0) {
+        
         setTrade(element);
-      }else{
-        setTrade(false)
+        
       }
     }
   };
+console.log(trade)
 
-
-  const web3Init = async () => {
+  const web3Init =  () => {
     setLoading(true)
     getUserTrade();
  getCaData();
@@ -111,14 +118,7 @@ export const UserContextWrapper = (props) => {
 
   useEffect(() => {
     web3Init()
-        data?.properties&&
-        setTheme({
-          navbarColor: colors[data?.properties?.name.value],
-          mainBackground:bgColors[data?.properties?.name.value],
-          neumorph: neumorph[data?.properties?.name.value],
-          pressed:neumorphInset[data?.properties?.name.value]
-        })
-
+       
         if(isConnected==false || userTokenId == false){
           setTheme({
             navbarColor: '#0A2647',
@@ -129,6 +129,8 @@ export const UserContextWrapper = (props) => {
           })
         }
           else{
+            getUserTrade();
+
             defaultUserToken()
             setTheme({
               navbarColor: colors[data?.properties?.name.value],
