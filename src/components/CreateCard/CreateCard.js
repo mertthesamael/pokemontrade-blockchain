@@ -4,9 +4,10 @@ import { UserContext } from "../../store/context";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { useContractEvent } from "wagmi";
+import { useNavigate } from "react-router-dom";
 
 const CreateCard = () => {
-  const { userToken, userTokenId, ca, web3Init, theme, contract } = useContext(UserContext);
+  const { userToken, userTokenId, ca, web3Init, theme, contract,refetch } = useContext(UserContext);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -24,19 +25,24 @@ const CreateCard = () => {
       });
     }
   };
+  const navigate = useNavigate()
+  
 
   useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'TradeCreated',
     listener() {
-      web3Init();
       toast({
-        title:'Trade Opened !',
+        title:'Trade Created',
         status:'success'
       })
+      navigate('/mytrade')
+      web3Init()
     },
-    once: true,
+    once:true
+   
+ 
   })
 
   if (userTokenId == 0) {

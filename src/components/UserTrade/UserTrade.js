@@ -1,4 +1,4 @@
-import { Button, Flex, Image, Progress, Spinner, StylesProvider, useToast } from "@chakra-ui/react";
+import { Button, Flex, Image, Progress, Spinner, useToast } from "@chakra-ui/react";
 import Trade from "../Trade/Trade";
 import { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useContractEvent } from "wagmi";
 import styles from "./usertrade.module.scss"
 const UserTrade = () => {
-  const { ca, trade, web3Init, loading:web3Loading, isConnected,contract,address } = useContext(UserContext);
+  const { ca, trade, web3Init, loading:web3Loading, isConnected,contract,address,refetch } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [creatorApplied, setCreatorApplied] = useState(trade.creatorConfirm)
   const [dealerApplied, setDealerApplied] = useState(trade.delaerConfirm)
@@ -18,7 +18,6 @@ const UserTrade = () => {
   const [finalizeLoading, setFinalizeLoading] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
   const navigate = useNavigate();
-
   const toast = useToast();
   const applyTrade = async () => {
 
@@ -83,10 +82,10 @@ const UserTrade = () => {
     abi: abi.abi,
     eventName: 'Cancel',
     listener() {
-      web3Init()
       setLoading(false);
       setCancelLoading(false);
-     
+      
+      web3Init()
     },
     once: true,
   })

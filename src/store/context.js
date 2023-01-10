@@ -12,17 +12,40 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0xF4f64A4C3bd7C35E440Cdc5063310bcAc5F018C5";
+  const ca = "0x0b91EDb6C2e1e055c3774D646846662f33d8842C";
 
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
   const [completedTrades, setCompletedTrades] = useState()
   const [userTotalTokens, setUserTotalTokens] = useState(0)
+  const [tokenUri, setTokenUri] = useState()
   const [loading, setLoading] = useState()
+  const [isTrading, setIsTrading] = useState()
   
   const contract = useGetContract(ca,abi.abi)
-  
-  
+  const getUserNft = async () => {
+
+    try{
+      const nfts = await  contract.getAll(address);
+      const tokenUri = await contract.tokenURI(nfts[nfts.length - 1].toNumber());
+      setTokenUri(tokenUri);
+      setUserTokenId(nfts[nfts.length - 1].toNumber());
+
+    }catch(err){
+      setTokenUri('');
+      setUserTokenId('');
+    }
+  };
+  const getIsTrading = async() => {
+
+
+    const data = await contract.isTrading(address);
+    if(data){
+      setIsTrading(true)
+    }else{
+      setIsTrading(false)
+    }
+      }
   const {address, isConnected} = useAccount()
   const toast = useToast();
   const [theme, setTheme] = useState({
@@ -43,8 +66,6 @@ export const UserContextWrapper = (props) => {
   }
   const {data:allTrades} = useGetContractData("totalTrades",null,ca)
   const getCaData = async () => {
-    
-    const allTrades = await contract.totalTrades();
     let emptyArr = [];
     let completedOnes = []
     for (let i = 1; i <= allTrades.toNumber(); i++) {
@@ -58,17 +79,12 @@ export const UserContextWrapper = (props) => {
     setTotalTrades(emptyArr);
     setCompletedTrades(completedOnes)
   };
-  const {data:isTrading} = useGetContractData("isTrading",address,ca)
+  const [trade, setTrade] = useState(false);
+
   const {data:userTokens} = useGetContractData("getAll",address,ca)
-  const {data:tokenUri} = useGetContractData("tokenURI",userTokenId,ca)
   const { data, isLoading } = useGetData(tokenUri);
 
-  
-  
-  
 
-
-  const [trade, setTrade] = useState(false);
   const getUserTrade = async () => {
     const numberOfTrades = await contract.getAlltrades();
     const array = [];
@@ -83,20 +99,27 @@ export const UserContextWrapper = (props) => {
   };
 
 
-
   const web3Init = async () => {
     setLoading(true)
     getUserTrade();
  getCaData();
+  getUserNft();
+ getIsTrading();
 
     setLoading(false)
   };
 
   useEffect(() => {
-        web3Init()
-       
-        
-        if(isConnected==false){
+    web3Init()
+        data?.properties&&
+        setTheme({
+          navbarColor: colors[data?.properties?.name.value],
+          mainBackground:bgColors[data?.properties?.name.value],
+          neumorph: neumorph[data?.properties?.name.value],
+          pressed:neumorphInset[data?.properties?.name.value]
+        })
+
+        if(isConnected==false || userTokenId == false){
           setTheme({
             navbarColor: '#0A2647',
             mainBackground:'#16213E',
@@ -104,18 +127,19 @@ export const UserContextWrapper = (props) => {
             boxShadow: "10px 10px 21px #051425, -10px -10px 21px #0f3869"},
             pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
           })
-        }else{
-          defaultUserToken()
-          setTheme({
-            navbarColor: colors[data?.properties?.name.value],
-            mainBackground:bgColors[data?.properties?.name.value],
-            neumorph: neumorph[data?.properties?.name.value],
-            pressed:neumorphInset[data?.properties?.name.value]
-          })
         }
+          else{
+            defaultUserToken()
+            setTheme({
+              navbarColor: colors[data?.properties?.name.value],
+              mainBackground:bgColors[data?.properties?.name.value],
+              neumorph: neumorph[data?.properties?.name.value],
+              pressed:neumorphInset[data?.properties?.name.value]
+            })
+          }
         
         
-      }, [contract,address,data,isConnected,tokenUri]);
+      }, [contract,address,data,isConnected]);
       
       return (
     <UserContext.Provider

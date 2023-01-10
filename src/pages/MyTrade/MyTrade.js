@@ -1,13 +1,20 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import UserTrade from "../../components/UserTrade/UserTrade";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 import { useNavigate } from "react-router-dom";
 import Trade from "../../components/Trade/Trade";
 import styles from "./mytrade.module.scss"
-
+import { useGetContractData } from "../../hooks/useGetContractData";
+import { ethers } from "ethers";
+import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
 const MyTrade = () => {
-  const { trade,completedTrades,address } = useContext(UserContext);
+  const { completedTrades,address,ca,trade } = useContext(UserContext);
+  const {data:allTrades} = useGetContractData("totalTrades",null,ca)
+
+ 
+  
+ 
   let tsx = completedTrades?.filter(x=> x.creator == address || x.dealer == address)
 
  
@@ -52,7 +59,7 @@ const MyTrade = () => {
       </Flex>
       <Text color='white' fontWeight='bolder' fontSize='30px'>TSX History</Text>
 
-      <Flex className={styles.tsx}  p='1rem'  flexDir='column' gap='2rem' overflow='auto' w='60%' h='16rem' >{tsx.map(x=> <Trade id='2' trade={x}></Trade>)}</Flex>
+      <Flex className={styles.tsx}  p='1rem'  flexDir='column' gap='2rem' overflow='auto' w='60%' h='16rem' >{tsx?.map(x=> <Trade id='2' trade={x}></Trade>)}</Flex>
     </Flex>
   );
 };

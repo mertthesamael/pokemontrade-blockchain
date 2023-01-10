@@ -14,7 +14,6 @@ try{
         functionName:functionName,
         args:[args],
         onSuccess(data) {
-          console.log('Success', data)
         },
         watch: true
       })

@@ -30,32 +30,19 @@ const navigate = useNavigate()
     eventName: 'Bid',
     listener() {
       setLoading(false)
-     
       web3Init()
     },
-    once: true,
+
   })
-  useContractEvent({
-    address: ca,
-    abi: abi.abi,
-    eventName: 'TradeCreated',
-    listener() {
-      setLoading(false);
-      web3Init();
-    },
-   
-    once: true,
-  })
+ 
   const contractRead = useContractRead({
     address: ca,
     abi: abi.abi,
     functionName: 'tokenURI',
     args:[2],
     onSuccess(data) {
-      console.log('Success', data)
     },
   })
-
 
   const bidTrade = async () => {
     setLoading(true)
