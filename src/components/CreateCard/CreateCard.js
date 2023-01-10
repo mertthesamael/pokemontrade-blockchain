@@ -33,12 +33,16 @@ const CreateCard = () => {
     abi: abi.abi,
     eventName: 'TradeCreated',
     listener() {
-      toast({
-        title:'Trade Created',
-        status:'success'
-      })
-      navigate('/mytrade')
-      web3Init()
+     setTimeout(() => {
+         web3Init()
+         toast({
+           title:'Trade Created',
+           status:'success'
+         })
+          
+          navigate('/mytrade')
+     }, 3000);
+      
     },
     once:true
    

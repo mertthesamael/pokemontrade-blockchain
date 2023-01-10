@@ -132,7 +132,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
             isTrading[trades[_tradeId].creator] = false;
         if(msg.sender == trades[_tradeId].creator){
             require(trades[_tradeId].isCompleted == false, "Trade ended already");
-            delete trades[_tradeId];
+            trades[_tradeId].creatorTokenId = 0;
             emit Cancel(msg.sender, _tradeId);
         } else if(msg.sender==trades[_tradeId].dealer){
             trades[_tradeId].dealerConfirm = false;

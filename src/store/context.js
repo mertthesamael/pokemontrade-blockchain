@@ -13,7 +13,7 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0x0b91EDb6C2e1e055c3774D646846662f33d8842C";
+  const ca = "0x98476c1d86Bf06c7d9F609a59EA6FC62D8c2f912";
 
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
@@ -96,15 +96,16 @@ export const UserContextWrapper = (props) => {
     const numberOfTrades = await contractt.getAlltrades();
     const array = [];
     for (let i = 0; i <= numberOfTrades.toNumber(); i++) {
+      
       const element = await contractt.trades(i);
-      if (element.dealer == address || element.creator == address && element.creatorTokenId !==0) {
+      if (element.dealer == address || element.creator == address && element.creatorTokenId.toNumber() !==0) {
         
         setTrade(element);
         
       }
     }
   };
-console.log(trade)
+
 
   const web3Init =  () => {
     setLoading(true)
