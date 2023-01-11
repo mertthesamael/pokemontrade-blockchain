@@ -1,18 +1,16 @@
 import { Button, Flex, Grid, Image, Spinner, Text, useToast } from "@chakra-ui/react";
 import TradeIcon from "../../assets/tradeIcon.svg";
 import { useContext, useEffect, useState } from "react";
-import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { useGetData } from "../../hooks/useGetData";
 import { UserContext } from "../../store/context";
 import styles from "./trade.module.scss";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContractEvent, useContractRead } from "wagmi";
+import { useContractEvent } from "wagmi";
 import { useGetContractData } from "../../hooks/useGetContractData";
 
 const Trade = ({ trade }) => {
-  const [creatorUri, setCreatorUri] = useState();
-  const [dealerUri, setDealerUri] = useState();
+ 
   const [loading, setLoading] = useState();
   const { ca, web3Init, userToken, trade:userTrade, web3Loading, contract, theme, address } = useContext(UserContext);
   const {data:_creatorToken} = useGetContractData("tokenURI",trade.creatorTokenId.toNumber(),ca)
@@ -24,25 +22,27 @@ const Trade = ({ trade }) => {
   const toast = useToast();
 
 const navigate = useNavigate()
+
   useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'Bid',
     listener() {
-      setLoading(false)
-      web3Init()
+      setTimeout(() => {
+        
+        toast({
+          status:'success',
+          title:'Bid Accepted !',
+          description:'Go to MyTrade page to see it !'
+        })
+        setLoading(false)
+        web3Init()
+      }, 6000);
     },
-
+    once:true
   })
  
-  const contractRead = useContractRead({
-    address: ca,
-    abi: abi.abi,
-    functionName: 'tokenURI',
-    args:[2],
-    onSuccess(data) {
-    },
-  })
+  
 
   const bidTrade = async () => {
     setLoading(true)
@@ -62,8 +62,7 @@ const navigate = useNavigate()
   useEffect(() => {
  
     web3Init()
-
-
+  
   }, []);
 
   return (

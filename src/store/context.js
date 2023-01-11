@@ -5,7 +5,6 @@ import { useToast } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 import { bgColors, colors, neumorph, neumorphInset } from "../styles/themeColors";
 import useGetContract from "../hooks/useGetContract";
-import { useGetContractData } from "../hooks/useGetContractData";
 import { ethers } from "ethers";
 
 const UserContext = React.createContext({
@@ -13,7 +12,7 @@ const UserContext = React.createContext({
 });
 
 export const UserContextWrapper = (props) => {
-  const ca = "0x98476c1d86Bf06c7d9F609a59EA6FC62D8c2f912";
+  const ca = "0x22D2217794857C001f1D611Af72e990bf1C72b51";
 
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
@@ -58,14 +57,7 @@ export const UserContextWrapper = (props) => {
     pressed:{boxShadow:'inset 10px 12px 30px #051425, inset 500px 500px 800px #0f3869'}
   })
   //background:'linear-gradient(145deg, #092240, #0b294c)'
-  const defaultUserToken = () => {
-      try{
-        return setUserTokenId(userTokens[userTokens.length-1].toNumber())
-      }catch{
-        return setUserTokenId(-1)
 
-      }
-  }
 
 
   const getCaData = async () => {
@@ -86,35 +78,70 @@ export const UserContextWrapper = (props) => {
     setCompletedTrades(completedOnes)
   };
   
-  const {data:userTokens} = useGetContractData("getAll",address,ca)
   const { data, isLoading } = useGetData(tokenUri);
+  
   
   const [trade, setTrade] = useState(false);
   const getUserTrade = async () => {
+   
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contractt = new ethers.Contract(ca, abi.abi, provider);
     const numberOfTrades = await contractt.getAlltrades();
     const array = [];
     for (let i = 0; i <= numberOfTrades.toNumber(); i++) {
-      
+     
       const element = await contractt.trades(i);
-      if (element.dealer == address || element.creator == address && element.creatorTokenId.toNumber() !==0) {
-        
-        setTrade(element);
+      if (element.isCompleted == false && (element.dealer == address || element.creator == address) && element.creatorTokenId.toNumber() !==0  ) {
+        //idk wht its not working will check later on
+        element.isCompleted==false&&setTrade(element);
         
       }
     }
   };
 
+  const refetchTrade =() =>  {
+    while(trade.creator !== address){
+      console.log('trade')
+         web3Init()
+    }
+  }
+  const refetchCancelTrade = (signer) => {
+    if(signer == trade.creator){
+
+      while(trade.creatorTokenId.toNumber() !== 0){
+        setTimeout(() => {
+          
+          web3Init()
+        }, 200);
+      }
+    }else if(signer == trade.dealer){
+      while(trade.delaerTokenId.toNumber() !== 0){
+        setTimeout(() => {
+          
+          web3Init()
+        }, 200);
+      }
+    }
+  }
+  const refetchFinalizeTrade = () => {
+    while(trade.isCompleted == false){
+      setTimeout(() => {
+        
+        web3Init()
+      }, 500);
+    }
+  }
+  
+
 
   const web3Init =  () => {
     setLoading(true)
     getUserTrade();
- getCaData();
-  getUserNft();
- getIsTrading();
-
+    getCaData();
+    getUserNft();
+    getIsTrading();
     setLoading(false)
+    console.log('web4init')
   };
 
   useEffect(() => {
@@ -131,8 +158,8 @@ export const UserContextWrapper = (props) => {
         }
           else{
             getUserTrade();
+            web3Init()
 
-            defaultUserToken()
             setTheme({
               navbarColor: colors[data?.properties?.name.value],
               mainBackground:bgColors[data?.properties?.name.value],
@@ -160,7 +187,10 @@ export const UserContextWrapper = (props) => {
         theme:theme,
         contract:contract,
         address:address,
-        completedTrades:completedTrades
+        completedTrades:completedTrades,
+        refetchTrade:refetchTrade,
+        refetchFinalizeTrade:refetchFinalizeTrade,
+        refetchCancelTrade:refetchCancelTrade
       
       }}
     >

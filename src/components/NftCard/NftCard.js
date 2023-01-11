@@ -6,13 +6,14 @@ import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { UserContext } from "../../store/context";
 import { useNavigate } from "react-router-dom";
+import { useContractEvent } from "wagmi";
 
 const NftCard = ({ id }) => {
   const [shadowY, setShadowY] = useState("");
   const [shadowX, setShadowX] = useState("");
-  const { ca, web3Init } = useContext(UserContext);
+  const { ca, web3Init,address } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = useState(false);
+
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -20,13 +21,35 @@ const NftCard = ({ id }) => {
     setLoading(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(ca, abi.abi, provider);
-    contract.on("Minted", () => {
-      setLoading(false);
-      web3Init();
-      setSelected(true);
-      navigate("/mynft");
-    });
+    // contract.on("Minted", () => {
+    //   setLoading(false);
+    //   web3Init();
+    //   setSelected(true);
+    //   navigate("/mynft");
+    // });
   };
+
+ 
+  useContractEvent({
+    address: ca,
+    abi: abi.abi,
+    eventName: 'Minted',
+    listener(_addr, _id) {
+      if(_addr == address){
+        setTimeout(() => {
+          
+         
+          web3Init()
+          navigate('/mynft')
+          setLoading(false)
+        }, 6000);
+
+      }
+      
+    },
+    
+    once:true
+  })
   //Function for tracking mouse position in order to develop dynamic shadow.
   const mouseTracker = (e) => {
     setShadowY(

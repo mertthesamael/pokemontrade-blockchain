@@ -9,7 +9,7 @@ export const useGetData = (url) => {
     }
 
     return useQuery(['User Token', url], () => fetchData(url),{
-        select: (data) => data.data,
+        select: (data) => data?.data,
         staleTime: 30000,
         refetchOnWindowFocus: true,
         refetchInterval: 10000,

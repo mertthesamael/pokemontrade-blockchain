@@ -1,54 +1,61 @@
-import { Button, Flex, Image, useToast } from "@chakra-ui/react";
+import { Button, Flex, Image, Spinner, useToast } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 import { ethers } from "ethers";
 import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { useContractEvent } from "wagmi";
-import { useNavigate } from "react-router-dom";
+
 
 const CreateCard = () => {
-  const { userToken, userTokenId, ca, web3Init, theme, contract,refetch } = useContext(UserContext);
+  const { userToken, userTokenId, ca, web3Init, theme, contract,refetch,address, refetchTrade } = useContext(UserContext);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
 
   const createTrade = async () => {
+    
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(ca, abi.abi, signer);
     try {
       await contract.setTrade(userTokenId);
+      setLoading(true)
     } catch (err) {
       toast({
         title: err.reason,
         status: "error",
       });
     }
-  };
-  const navigate = useNavigate()
+  }
   
 
   useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'TradeCreated',
-    listener() {
-     setTimeout(() => {
-         web3Init()
-         toast({
-           title:'Trade Created',
-           status:'success'
-         })
-          
-          navigate('/mytrade')
-     }, 3000);
+    listener(_address, _id) {
+    if(_address == address){
+      setTimeout(() => {
+        
+        toast({
+          title:'Trade Created',
+          status:'success',
+          description:'You can see it on Trades or MyTrade tab !'
+        })
+        web3Init()
+        setLoading(false)
+      }, 6000);
+       
+    }
       
     },
     once:true
    
  
   })
-
+useEffect(() => {
+web3Init()
+},[])
   if (userTokenId == 0) {
     return null;
   }
@@ -62,7 +69,10 @@ const CreateCard = () => {
         />
       </Flex>
       <Flex w="100%" justifyContent="center">
+        {loading? <Spinner />
+        :
         <Button onClick={createTrade}>Trade it !</Button>
+        }
       </Flex>
     </Flex>
   );

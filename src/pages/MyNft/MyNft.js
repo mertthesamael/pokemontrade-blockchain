@@ -1,11 +1,13 @@
 import { Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../store/context";
 import NftInfo from "../../components/NftInfo/NftInfo";
 import { NavLink } from "react-router-dom";
 const MyNft = () => {
-  const { userToken, loading } = useContext(UserContext);
-
+  const { userToken, loading,web3Init } = useContext(UserContext);
+  useEffect(() => {
+      web3Init()
+  },[])
   return (
     <Flex justify="center" align="center" w="100%" h="100%">
       {loading?<Spinner/>:userToken && userToken.properties?<NftInfo token={userToken}/>:

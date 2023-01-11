@@ -2,13 +2,13 @@ import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import NftCard from "../../components/NftCard/NftCard";
 import Tilt from "react-parallax-tilt";
 import styles from "./main.module.scss";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 //Name will replaced with MINT - maybe
 const Main = () => {
   const [shadowY, setShadowY] = useState("");
   const [shadowX, setShadowX] = useState("");
-  const { userToken } = useContext(UserContext);
+  const { userToken,web3Init } = useContext(UserContext);
   //Function for tracking mouse position in order to develop dynamic shadow.
   const mouseTracker = (e) => {
     setShadowY(
@@ -29,7 +29,10 @@ const Main = () => {
     Charmander: { img: "Charmander", color: "orange" },
     Pikachu: { img: "Pikachu", color: "yellow" },
   };
-
+  useEffect(() => {
+    web3Init()
+  },[])
+  
   return (
     <Flex
       justify="center"
@@ -40,7 +43,7 @@ const Main = () => {
       h="100%"
       w="100%"
     >
-      <Flex pos="relative" top="-8rem">
+      <Flex textAlign='center' pos="relative" top="-8rem">
         <Text color="white" fontWeight="bolder" fontSize="25px">
           Welcome Trainer ! Choose your Pokémon Wisely, You Have Only 1 Chance !
         </Text>

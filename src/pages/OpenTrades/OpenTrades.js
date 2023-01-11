@@ -4,9 +4,11 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../store/context";
 import styles from "./opentrades.module.scss"
 const OpenTrades = () => {
-  const { totalTrades, completedTrades,address } = useContext(UserContext);
- console.log(totalTrades)
+  const { totalTrades, completedTrades,address, web3Init } = useContext(UserContext);
 
+ useEffect(() => {
+  web3Init()
+},[])
   return (  
     <Flex w="100%" flexDir="column" justify="center" align="center" h="100%">
       <Flex

@@ -76,9 +76,12 @@ const Home = () => {
             </NavLink>
 
             {/* <Button onClick={getNftData}>Get NFT Metadata</Button> */}
-            <Button p="1.5rem" border="2px solid white">
+              <a href="https://www.linkedin.com/in/mertenercan/" target={'_blank'}>
+            <Button  p="1.5rem" border="2px solid white">
+
               Contact Me
             </Button>
+              </a>
           </Flex>
         </Flex>
       </Flex>

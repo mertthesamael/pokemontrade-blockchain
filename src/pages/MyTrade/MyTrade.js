@@ -6,22 +6,22 @@ import { useNavigate } from "react-router-dom";
 import Trade from "../../components/Trade/Trade";
 import styles from "./mytrade.module.scss"
 import { useGetContractData } from "../../hooks/useGetContractData";
-import { ethers } from "ethers";
-import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
-const MyTrade = () => {
-  const { completedTrades,address,ca,trade } = useContext(UserContext);
-  const {data:allTrades} = useGetContractData("totalTrades",null,ca)
 
+
+const MyTrade = () => {
+  const { completedTrades,address,ca,trade,web3Init } = useContext(UserContext);
  
+
+  useEffect(() => {
+    web3Init()
+  },[])
   
  
   let tsx = completedTrades?.filter(x=> x.creator == address || x.dealer == address)
 
  
   const navigate = useNavigate();
-  const navigateUser = (path) => {
-    return navigate(path);
-  };
+
   if (
     trade.creatorTokenId == 0 ||
     trade.isCompleted == true ||

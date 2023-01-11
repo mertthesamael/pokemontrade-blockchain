@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useContractEvent } from "wagmi";
 import styles from "./usertrade.module.scss"
 const UserTrade = () => {
-  const { ca, trade, web3Init, loading:web3Loading, isConnected,contract,address,refetch } = useContext(UserContext);
+  const { ca, trade, web3Init, loading:web3Loading, contract,address } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [creatorApplied, setCreatorApplied] = useState(trade.creatorConfirm)
   const [dealerApplied, setDealerApplied] = useState(trade.delaerConfirm)
@@ -63,29 +63,39 @@ const UserTrade = () => {
     const signer = provider.getSigner();
     const contract = new ethers.Contract(ca, abi.abi, signer);
     try{
-
-        await contract.finalizeTrade(trade.tradeId);
+      
+      await contract.finalizeTrade(trade.tradeId);
     }catch(err){
-        toast({
-            title:err.reason,
-            status:'error'
-        })
-        setLoading(false)
-        setFinalizeLoading(false)
-
-
+      toast({
+        title:err.reason,
+        status:'error'
+      })
+      setLoading(false)
+      setFinalizeLoading(false)
+      
+      
     }
   };
 
+ 
   useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'Cancel',
-    listener() {
-      setLoading(false);
-      setCancelLoading(false);
-      
-      web3Init()
+    listener(_addr,_i) {
+      if(_addr = address){
+        setTimeout(() => {
+          
+          toast({
+            title:'Trade is Cancelled.',
+            status:'warning'
+          })
+          setLoading(false);
+          setCancelLoading(false);
+          web3Init()
+          window.location.reload(false)
+        }, 7000);
+      }
     },
     once: true,
   })
@@ -94,33 +104,45 @@ useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'CreatorConfirmed',
-    listener() {
-      setLoading(false);
-      setCreatorApplied(true)
-      setCreatorLoading(false)
-      web3Init()
-      toast({
-        title:'Creator Confirmed !',
-        status:'success'
-      })
-      setCreatorApplied(true)
+    listener(addr, i) {
+      if(addr == address){
+setTimeout(() => {
+  
+  toast({
+    title:'Creator Confirmed !',
+    status:'success'
+  })
+  setLoading(false);
+  setCreatorApplied(true)
+  setCreatorLoading(false)
+  setCreatorApplied(true)
+  web3Init()
+}, 7000);
+      }
     },
-    once: true,
+   once:true
   })
 useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'DealerConfirmed',
-    listener() {
-      setLoading(false);
-      setDealerLoading(false)
-      toast({
-        title:'Dealer Confirmed !',
-        status:'success'
-      })
-      setDealerApplied(true)
-    },
-    once: true,
+    listener(addr, i) {
+      if(addr == address){
+setTimeout(async() => {
+
+  toast({
+    title:'Dealer Confirmed !',
+    status:'success'
+  })
+  setLoading(false);
+  setDealerLoading(false)
+  setDealerApplied(true)
+  await web3Init()
+}, 7000);
+      }
+      
+      },
+   once:true
   })
   
 useContractEvent({
@@ -128,14 +150,30 @@ useContractEvent({
     abi: abi.abi,
     eventName: 'FinalizeTrade',
     listener() {
-      
-      setLoading(false);
-      setFinalizeLoading(false)
-      web3Init();
+      setTimeout(async() => {
+        toast({
+          title:'Trade Completed !',
+          status:'success',
+          description:'Go to MyNft page to check your new NFT !'
+        })
+        setLoading(false);
+        setFinalizeLoading(false)
+        
+       await web3Init()
+        navigate('/mynft')
+    
+        
+      }, 7000);
     },
-    once: true,
+   once:true
   })
   
+
+  useEffect(() => {
+    setDealerApplied(false)
+    setCreatorApplied(false)
+    web3Init()
+  },[])
 
 
 
@@ -166,7 +204,7 @@ useContractEvent({
             w="300px"
             maxH="100%"
             filter={
-              trade.creatorConfirm || (creatorApplied && dealerApplied)
+              (creatorApplied && dealerApplied)
               ? "invert(52%) sepia(35%) saturate(637%) hue-rotate(95deg) brightness(95%) contrast(96%)"
               : "invert(0.5) drop-shadow(3px 1px 0px black)"
             }

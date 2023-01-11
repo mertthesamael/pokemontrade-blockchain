@@ -10,7 +10,7 @@ module.exports = {
     matic:{
       url:"https://rpc-mumbai.maticvigil.com",
       //Well this is the test account, feel free to stole it lol xD
-      accounts:['']
+      accounts:[]
     }
   }
 };
