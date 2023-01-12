@@ -2,6 +2,9 @@
 
 
 ![image](https://user-images.githubusercontent.com/79616834/211262317-e3203b2d-a292-484a-b38a-b2587ccff09a.png)
+# DISCLAIMER
+This DaPP Works on Polygon - Mumbai testnet and does not have any connection with Pokémon Company. Tokens that minted from this dapp is worthless. No copyright infringement Intended
+
 
 Hey there, this is Merto. I decided to make a DaPP with my favorite series theme. Of course, this DaPP works on Polygon-Mumbai testnet for obvious reasons lol.
 *(I don't wanna get sued by Ash Ketchum)*
