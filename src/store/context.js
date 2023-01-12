@@ -7,6 +7,11 @@ import { bgColors, colors, neumorph, neumorphInset } from "../styles/themeColors
 import useGetContract from "../hooks/useGetContract";
 import { ethers } from "ethers";
 
+
+
+/***** WELCOME TO THE HELL XD IK THAT THIS ONE FUCKED UP, WILL COVER IT LATER I GUESS OR NOT IDK *****/
+
+
 const UserContext = React.createContext({
   emptyValue: "",
 });
@@ -17,7 +22,7 @@ export const UserContextWrapper = (props) => {
   const [userTokenId, setUserTokenId] = useState(0);
   const [totalTrades, setTotalTrades] = useState();
   const [completedTrades, setCompletedTrades] = useState()
-  const [userTotalTokens, setUserTotalTokens] = useState(0)
+
   const [tokenUri, setTokenUri] = useState()
   const [loading, setLoading] = useState()
   const [isTrading, setIsTrading] = useState()

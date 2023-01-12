@@ -17,18 +17,6 @@ const NftCard = ({ id }) => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const checkEvents = () => {
-    setLoading(true);
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(ca, abi.abi, provider);
-    // contract.on("Minted", () => {
-    //   setLoading(false);
-    //   web3Init();
-    //   setSelected(true);
-    //   navigate("/mynft");
-    // });
-  };
-
  
   useContractEvent({
     address: ca,
@@ -42,7 +30,9 @@ const NftCard = ({ id }) => {
           web3Init()
           navigate('/mynft')
           setLoading(false)
-        }, 6000);
+          web3Init()
+
+        }, 7000);
 
       }
       
@@ -74,7 +64,7 @@ const NftCard = ({ id }) => {
         .mint(
           `https://ipfs.io/ipfs/QmTJe7S9PEzgfgXaN9ZYb19m9y7kvPR6Be1qthKSrKyEVV/${id}.json`
         )
-        .then(() => checkEvents());
+        
     } catch (err) {
       console.log(err);
       toast({

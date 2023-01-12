@@ -5,7 +5,7 @@ import abi from "../../contracts/PokemonCards.sol/PokemonCards.json";
 import { useGetData } from "../../hooks/useGetData";
 import { UserContext } from "../../store/context";
 import styles from "./trade.module.scss";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useContractEvent } from "wagmi";
 import { useGetContractData } from "../../hooks/useGetContractData";
 
@@ -21,7 +21,6 @@ const Trade = ({ trade }) => {
 
   const toast = useToast();
 
-const navigate = useNavigate()
 
   useContractEvent({
     address: ca,

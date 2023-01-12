@@ -45,6 +45,7 @@ const Home = () => {
           alignItems="center"
           gap="5rem"
           flexDir="column"
+          textAlign='center'
         >
           <Text color="white" fontSize="70px" fontFamily="Concert One">
             Pokémon TCG Blockchain

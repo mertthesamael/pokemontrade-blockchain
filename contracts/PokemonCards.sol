@@ -46,6 +46,9 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     }
 
     uint public totalTrades = 0;
+  
+    /***************** TRADE SEQUENCE *****************/
+
     struct Trade {
         address creator;
         uint creatorTokenId;
@@ -56,9 +59,6 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         address dealer;
         uint dealerTokenId;
     }
-  
-    /***************** TRADE SEQUENCE *****************/
-
     //Trade Events
 
     event TradeCreated(address indexed _signer, uint indexed _id);
@@ -67,15 +67,21 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     event FinalizeTrade(address indexed _from, address indexed _to, uint indexed _id);
     event CreatorConfirmed(address indexed _signer, uint indexed _id);
     event DealerConfirmed(address indexed _signer, uint indexed _id);
+
+    //Mappings for trading info per address
     mapping(uint => Trade) public trades;
     mapping(address => Trade[]) public userTrades;
     mapping(address => bool) public isTrading;
+
+    //Array of all the trades
     Trade[] public allTrades;
 
+    //And the function for get the length of em. This one will help us in the front-end
     function getAlltrades() public view returns(uint){
         return allTrades.length;
     }
 
+    //Creating a new trade
     function setTrade(uint _creatorTokenId) external payable {
         require(ownerOf(_creatorTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
         require(isTrading[msg.sender] == false, "You are already trading !");
@@ -98,10 +104,11 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         emit TradeCreated(msg.sender, totalTrades);
 
     }
-
+    
+    //Bid for the trade
     function bidTrade(uint _tradeId, uint _delaerTokenId) external payable {
         require(ownerOf(_delaerTokenId) == msg.sender, "You must own this NFT in order to trade it" ); 
-        // require(ownedNfts[msg.sender].length + 1 > 0, "You dont have any nft" ); 
+        // require(ownedNfts[msg.sender].length + 1 > 0, "You dont have any nft" );  - i'll keep it optional
         require(isTrading[msg.sender] == false, "You are already trading ! ");
         
         setApprovalForAll(address(this), true); 
@@ -112,6 +119,8 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         emit Bid(msg.sender, _tradeId);
         
     }
+
+    //Function confirming the trade
     function approveTrade(uint _tradeId) external payable{
         require(msg.sender == trades[_tradeId].creator || msg.sender == trades[_tradeId].dealer, "You have no permission in this trade");
         if(msg.sender == trades[_tradeId].creator){
@@ -126,6 +135,8 @@ contract PokemonCards is ERC721URIStorage, Ownable {
         }
     }
     
+
+    //Well it's obvious. I'm not gonna tell ya.
     function cancelTrade(uint _tradeId) external payable{
         require(msg.sender == trades[_tradeId].creator || msg.sender == trades[_tradeId].dealer, "You have no permission in this trade");
             isTrading[trades[_tradeId].dealer] = false;
@@ -144,6 +155,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     }
 
 
+    //You guessed it right, function for the finilizing the trade.
     function finalizeTrade(uint _tradeId) external payable {
         require(trades[_tradeId].creator == msg.sender || trades[_tradeId].dealer == msg.sender, "You have no permission in this trade");
         require(trades[_tradeId].isCompleted == false, "Trade already completed");

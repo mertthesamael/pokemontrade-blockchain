@@ -1,19 +1,17 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import NavItem from "../../components/NavItem/NavItem";
 import { NavLink } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../store/context";
 import { LayoutContext } from "../../store/layoutContext";
 import styles from "./sidemenu.module.scss";
-import abi from "../../contracts/PokemonCards.sol/PokemonCards.json"
-import { ethers } from "ethers";
 import { HamburgerIcon, WarningIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const SideMenu = () => {
-  const { isConnected, userToken, userAddr, web3Init, ca, isTrading, trade,theme  } = useContext(UserContext);
+const Navigation = () => {
+  const {isTrading, trade,theme } = useContext(UserContext);
  
-  const { menuState, onMenuState, connect} = useContext(LayoutContext);
+  const { menuState, onMenuState} = useContext(LayoutContext);
   const colors = {
     Charmander: "#AE431E",
     Bulbasaur: "#285430",
@@ -74,4 +72,4 @@ const SideMenu = () => {
   );
 };
 
-export default SideMenu;
+export default Navigation;

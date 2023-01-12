@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home";
 import Main from "./pages/Main/Main";
 import Wrapper from "./layouts/Wrapper/Wrapper";
 import Body from "./layouts/Body/Body";
-import SideMenu from "./layouts/SideMenu/SideMenu";
+import Navigation from "./layouts/Navigation/Navigation";
 import MyNft from "./pages/MyNft/MyNft";
 import OpenTrades from "./pages/OpenTrades/OpenTrades";
 import CreateTrade from "./pages/CreateTrade/CreateTrade";
@@ -20,7 +20,7 @@ function App() {
         element={
           <Wrapper>
             <MobileMenu />
-            <SideMenu />
+            <Navigation />
             <Body>
               <Main />
             </Body>
@@ -34,7 +34,7 @@ function App() {
           <Wrapper>
             <MobileMenu />
 
-            <SideMenu />
+            <Navigation />
             <Body>
               <MyNft />
             </Body>
@@ -48,7 +48,7 @@ function App() {
           <Wrapper>
             <MobileMenu />
 
-            <SideMenu />
+            <Navigation />
             <Body>
               <OpenTrades />
             </Body>
@@ -61,7 +61,7 @@ function App() {
           <Wrapper>
             <MobileMenu />
 
-            <SideMenu />
+            <Navigation />
             <Body>
               <CreateTrade />
             </Body>
@@ -74,7 +74,7 @@ function App() {
           <Wrapper>
             <MobileMenu />
 
-            <SideMenu />
+            <Navigation />
             <Body>
               <MyTrade />
             </Body>

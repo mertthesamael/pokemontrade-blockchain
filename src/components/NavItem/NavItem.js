@@ -1,5 +1,4 @@
 import { Box, Text } from "@chakra-ui/react"
-import styles from "./navitem.module.scss"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../../store/context"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -9,7 +8,6 @@ import { useLocation, useNavigate } from "react-router-dom"
 const NavItem = ({title}) => {
 
     const {theme, userToken} = useContext(UserContext)
-    const [selected, setSelected] = useState()
     const location = useLocation()
     const neumorph = {
         Pikachu: {
@@ -34,13 +32,11 @@ const NavItem = ({title}) => {
 
         },[])
 
-        const locationHandler = () => {
-            selected(location.pathname.slice(1))
-        }
+   
     return(
         <Box w='8rem' textAlign='center' borderRadius='10px' p='0.7rem'  border={location.pathname.slice(1) == title.toLowerCase() && '2px solid white'}
         style={userToken?.properties?neumorph[userToken?.properties?.name.value]:theme.neumorph} >
-            <Text  fontWeight='bolder' onClick={locationHandler} color='white' fontSize='1rem'>{title}</Text>
+            <Text  fontWeight='bolder'  color='white' fontSize='1rem'>{title}</Text>
         </Box>
     )
 

@@ -7,7 +7,7 @@ import { useContractEvent } from "wagmi";
 
 
 const CreateCard = () => {
-  const { userToken, userTokenId, ca, web3Init, theme, contract,refetch,address, refetchTrade } = useContext(UserContext);
+  const { userToken, userTokenId, ca, web3Init, theme, address } = useContext(UserContext);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
