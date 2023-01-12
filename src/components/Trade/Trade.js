@@ -27,17 +27,19 @@ const navigate = useNavigate()
     address: ca,
     abi: abi.abi,
     eventName: 'Bid',
-    listener() {
-      setTimeout(() => {
-        
-        toast({
-          status:'success',
-          title:'Bid Accepted !',
-          description:'Go to MyTrade page to see it !'
-        })
-        setLoading(false)
-        web3Init()
-      }, 6000);
+    listener(_acc, _id) {
+      if(_acc == address){
+          setTimeout(() => {
+
+          toast({
+            status:'success',
+            title:'Bid Accepted !',
+            description:'Go to MyTrade page to see it !'
+          })
+          setLoading(false)
+          web3Init()
+        }, 6000);
+      }
     },
     once:true
   })

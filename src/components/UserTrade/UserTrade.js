@@ -149,9 +149,11 @@ useContractEvent({
     address: ca,
     abi: abi.abi,
     eventName: 'FinalizeTrade',
-    listener() {
-      setTimeout(async() => {
-        toast({
+    listener(_from, _to, _id) {
+      if(_from == address || _to == address){
+
+        setTimeout(async() => {
+          toast({
           title:'Trade Completed !',
           status:'success',
           description:'Go to MyNft page to check your new NFT !'
@@ -159,11 +161,12 @@ useContractEvent({
         setLoading(false);
         setFinalizeLoading(false)
         
-       await web3Init()
+        await web3Init()
         navigate('/mynft')
-    
+        
         
       }, 7000);
+    }
     },
    once:true
   })
@@ -192,7 +195,7 @@ useContractEvent({
             {creatorLoading ? (
               <Spinner />
               ) : (
-               <Button border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+               <Button disabled={address == trade.creator} border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 )}
                         </Flex>
                         <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={creatorLoading} size='sm' value={trade.creatorConfirm || creatorApplied? 100: 0}/>
@@ -219,7 +222,7 @@ useContractEvent({
             {dealerLoading? (
               <Spinner />
               ) : (
-                <Button border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+                <Button disabled={address == trade.dealer} border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 
                 )}
           </Flex>
