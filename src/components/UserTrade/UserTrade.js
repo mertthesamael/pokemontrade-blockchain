@@ -195,7 +195,7 @@ useContractEvent({
             {creatorLoading ? (
               <Spinner />
               ) : (
-               <Button disabled={address == trade.creator} border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+               <Button disabled={address !== trade.creator} border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 )}
                         </Flex>
                         <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={creatorLoading} size='sm' value={trade.creatorConfirm || creatorApplied? 100: 0}/>
@@ -222,7 +222,7 @@ useContractEvent({
             {dealerLoading? (
               <Spinner />
               ) : (
-                <Button disabled={address == trade.dealer} border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+                <Button disabled={address !== trade.dealer} border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 
                 )}
           </Flex>
