@@ -11,8 +11,8 @@ import styles from "./usertrade.module.scss"
 const UserTrade = () => {
   const { ca, trade, web3Init, loading:web3Loading, contract,address } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [creatorApplied, setCreatorApplied] = useState(trade.creatorConfirm)
-  const [dealerApplied, setDealerApplied] = useState(trade.delaerConfirm)
+  const [creatorApplied, setCreatorApplied] = useState(trade?.creatorConfirm)
+  const [dealerApplied, setDealerApplied] = useState(trade?.delaerConfirm)
   const [creatorLoading, setCreatorLoading] = useState(false)
   const [dealerLoading, setDealerLoading] = useState(false)
   const [finalizeLoading, setFinalizeLoading] = useState(false)
@@ -21,13 +21,13 @@ const UserTrade = () => {
   const toast = useToast();
   const applyTrade = async () => {
 
-    if(address == trade.creator){
+    if(address == trade?.creator){
        setCreatorLoading(true)
-    }else if(address == trade.dealer){
+    }else if(address == trade?.dealer){
        setDealerLoading(true)
     }
     try {
-        await contract.approveTrade(trade.tradeId)
+        await contract.approveTrade(trade?.tradeId)
     } catch (err) {
       toast({
         title: err.reason,
@@ -45,7 +45,7 @@ const UserTrade = () => {
     const signer = provider.getSigner();
     const contract = new ethers.Contract(ca, abi.abi, signer);
     try {
-      await contract.cancelTrade(trade.tradeId)
+      await contract.cancelTrade(trade?.tradeId)
       
     } catch (err) {
       toast({
@@ -64,7 +64,7 @@ const UserTrade = () => {
     const contract = new ethers.Contract(ca, abi.abi, signer);
     try{
       
-      await contract.finalizeTrade(trade.tradeId);
+      await contract.finalizeTrade(trade?.tradeId);
     }catch(err){
       toast({
         title:err.reason,
@@ -180,7 +180,7 @@ useContractEvent({
 
 
 
-  if (trade.creatorTokenId == 0 || trade.isCompleted == true) {
+  if (!trade) {
     return null;
   }
   return (
@@ -188,17 +188,17 @@ useContractEvent({
       {web3Loading? <Spinner />
         :
         <>
-      {trade.isCompleted == false ? <Trade trade={trade}></Trade> : <Spinner />}
+      {trade?.isCompleted == false ? <Trade trade={trade}></Trade> : <Spinner />}
       <Flex w="100%" h="8rem">
         <Flex w="100%" h="100%" align="center">
           <Flex maxH="100%">
             {creatorLoading ? (
               <Spinner />
               ) : (
-               <Button disabled={address !== trade.creator} border='1px solid white' colorScheme={trade.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+               <Button disabled={address !== trade?.creator} border='1px solid white' colorScheme={trade?.creatorConfirm || creatorApplied?'green':""} onClick={applyTrade}>{trade?.creatorConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 )}
                         </Flex>
-                        <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={creatorLoading} size='sm' value={trade.creatorConfirm || creatorApplied? 100: 0}/>
+                        <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={creatorLoading} size='sm' value={trade?.creatorConfirm || creatorApplied? 100: 0}/>
         </Flex>
         <Flex w="max-content" h="100%" justify="center" align="center">
           {finalizeLoading?<Spinner></Spinner>:<Image
@@ -216,13 +216,13 @@ useContractEvent({
         </Flex>
 
         <Flex w="100%" h="100%" justify="flex-end" align="center">
-            <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={dealerLoading} size='sm' value={trade.dealerConfirm|| dealerApplied? 100: 0}/>
+            <Progress w='100%' bgColor='grey' colorScheme='green' isIndeterminate={dealerLoading} size='sm' value={trade?.dealerConfirm|| dealerApplied? 100: 0}/>
           
           <Flex maxH="100%">
             {dealerLoading? (
               <Spinner />
               ) : (
-                <Button disabled={address !== trade.dealer} border='1px solid white' colorScheme={trade.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
+                <Button disabled={address !== trade?.dealer} border='1px solid white' colorScheme={trade?.dealerConfirm || dealerApplied?'green':"default"} onClick={applyTrade}>{trade?.dealerConfirm || creatorApplied ?'Confirmed':'Confirm'}</Button>
                 
                 )}
           </Flex>

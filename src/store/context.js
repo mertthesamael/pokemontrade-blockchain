@@ -88,7 +88,11 @@ export const UserContextWrapper = (props) => {
   
   const [trade, setTrade] = useState(false);
   const getUserTrade = async () => {
-   
+    // if (element.isCompleted == false && (element.dealer == address || element.creator == address) && element.creatorTokenId.toNumber() !==0  ) {
+    //   //idk wht its not working will check later on
+    //   element.isCompleted==false&&setTrade(element);
+      
+    // }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contractt = new ethers.Contract(ca, abi.abi, provider);
     const numberOfTrades = await contractt.getAlltrades();
@@ -96,11 +100,16 @@ export const UserContextWrapper = (props) => {
     for (let i = 0; i <= numberOfTrades.toNumber(); i++) {
      
       const element = await contractt.trades(i);
-      if (element.isCompleted == false && (element.dealer == address || element.creator == address) && element.creatorTokenId.toNumber() !==0  ) {
+      if (element.dealer == address || element.creator == address) {
+        array.push(element)
         //idk wht its not working will check later on
-        element.isCompleted==false&&setTrade(element);
-        
       }
+    }
+    if(array.length){
+
+      let userTrade = array.filter((x) => x.isCompleted == false && x.creatorTokenId.toNumber() !==0 )
+      console.log(userTrade)
+      setTrade(userTrade[0])
     }
   };
 

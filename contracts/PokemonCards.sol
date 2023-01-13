@@ -14,7 +14,6 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     uint public totalSupply;
     uint public maxSupply;
 
-    mapping(address => mapping(uint256 => uint256)) private _ownedTokens;
     // Mapping for amount of minted nfts by an address
     mapping(address => uint256) public mintedWallets;
 
@@ -29,6 +28,7 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     function setMaxSupply(uint256 _maxSupply) external onlyOwner {
         maxSupply = _maxSupply;
     }
+    
     function mint(string memory tokenURI) external payable {
        require(mintedWallets[msg.sender] < 1, 'You have reached maximum mint number');
 
@@ -45,10 +45,10 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     return ownedNfts[_addr];
     }
 
-    uint public totalTrades = 0;
   
     /***************** TRADE SEQUENCE *****************/
 
+    uint public totalTrades = 0;
     struct Trade {
         address creator;
         uint creatorTokenId;
@@ -64,8 +64,11 @@ contract PokemonCards is ERC721URIStorage, Ownable {
     event TradeCreated(address indexed _signer, uint indexed _id);
     event Cancel(address indexed _signer, uint indexed _id);
     event Bid(address indexed _signer, uint indexed _id);
+
     event FinalizeTrade(address indexed _from, address indexed _to, uint indexed _id);
+
     event CreatorConfirmed(address indexed _signer, uint indexed _id);
+
     event DealerConfirmed(address indexed _signer, uint indexed _id);
 
     //Mappings for trading info per address

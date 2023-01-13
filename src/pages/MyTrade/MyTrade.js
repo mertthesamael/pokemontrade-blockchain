@@ -23,8 +23,8 @@ const MyTrade = () => {
   const navigate = useNavigate();
 
   if (
-    trade.creatorTokenId == 0 ||
-    trade.isCompleted == true ||
+    trade?.creatorTokenId == 0 ||
+    trade?.isCompleted == true ||
     trade == false
   ) {
     return (
